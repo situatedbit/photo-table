@@ -1,4 +1,11 @@
 import type { GetServerSideProps } from 'next';
+import dynamic from 'next/dynamic';
+
+// https://nextjs.org/docs/advanced-features/dynamic-import#with-no-ssr
+const SharedTable = dynamic(
+  () => import('../../components/shared-table'),
+  { ssr: false }
+);
 
 type Props = {
   id: string,
@@ -10,10 +17,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 }
 
-const Table = ({ id }: Props) => {
+const TablePage = ({ id }: Props) => {
   return (
-    <div>Table {id}</div>
+    <>
+      <div>Table {id}</div>
+      <SharedTable tableId={id} />
+    </>
   );
 }
 
-export default Table
+export default TablePage;

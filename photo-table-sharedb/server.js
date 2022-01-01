@@ -16,7 +16,7 @@ function createDoc(callback) {
   doc.fetch(function(err) {
     if (err) throw err;
     if (doc.type === null) {
-      doc.create({ images: [] }, json0.type.uri, callback);
+      doc.create({ images: [ { url: 'https://situatedbit.com/wp-content/uploads/2021/08/2021-08-23-0437-cropped-of-2021-08-10-06-web-1800w.jpg' }] }, json0.type.uri, callback);
       return;
     }
     callback();

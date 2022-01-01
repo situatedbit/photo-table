@@ -10,12 +10,20 @@ const emptyTable = {
   images: [],
 };
 
+/*
+  connection created when code is loaded. this isn't a sustainable solution; same
+  doc for all instances of shared-table. This should be moved outside of the
+  component lifecycle.
+*/
+const socket = new ReconnectingWebSocket('ws://localhost:8080');
+const connection = new Connection(socket);
+const sharedDoc = connection.get('tables', 'empty');
+
 const SharedTable = ({ tableId }: Props) => {
   const [table, setTable] = useState(emptyTable);
-  const socket = new ReconnectingWebSocket('ws://localhost:8080');
-  const connection = new Connection(socket);
-  const sharedDoc = connection.get('tables', 'empty');
+  const [urlValue, setUrlValue] = useState('');
 
+  // Subscribe so sharedDoc.data is updated when ops happen on server
   useEffect(() => {
     sharedDoc.subscribe((error) => {
       if (error) return console.error(error);
@@ -29,39 +37,53 @@ const SharedTable = ({ tableId }: Props) => {
           if (error) console.error(error);
         })
       }
-    }, []); // disable fire on updates
+    });
 
     return () => sharedDoc.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const handleLoad = () => setTable({ ...sharedDoc.data });
+
+    sharedDoc.on('load', handleLoad);
+
+    return () => sharedDoc.off('load', handleLoad);
   });
 
   useEffect(() => {
-    sharedDoc.on('load', () => {
-      setTable(sharedDoc.data);
-    });
+    const handleOp = () => setTable({ ...sharedDoc.data });
 
-    return () => sharedDoc.off('load', () => {});
+    sharedDoc.on('op', handleOp);
+
+    return () => sharedDoc.off('op', handleOp);
   });
 
-  useEffect(() => {
-    sharedDoc.on('create', () => {
-      setTable(sharedDoc.data);
-    });
+  const handleAddUrlSubmit = (event: Event) => {
+    event.preventDefault();
 
-    return () => sharedDoc.off('create', () => {});
-  });
+    const path = ['images', table.images.length];
+    const image = { url: urlValue };
+    const op = [{ p: path, li: image }];
+    sharedDoc.submitOp(op);
 
-  useEffect(() => {
-    sharedDoc.on('op', () => {
-      setTable(sharedDoc.data);
-    });
-
-    return () => sharedDoc.off('op', () => {});
-  });
+    setUrlValue('');
+  }
 
   return (
-    <ul>
-    { table.images.map((image) => <li key={image.url}>{image.url}</li>) }
-    </ul>
+    <div>
+      <form onSubmit={handleAddUrlSubmit}>
+        <input
+          type="url"
+          placeholder="Image URL"
+          value={urlValue}
+          onChange={(event: Event) => setUrlValue(event.target.value)}
+        />
+        <input type="submit" value="Add Image" />
+      </form>
+      <ul>
+      { table.images.map((image, i) => <li key={image.url + i}>{image.url}</li>) }
+      </ul>
+    </div>
   );
 };
 

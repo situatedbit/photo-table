@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 import styles from '../styles/Home.module.css'
 
 type TablesResponseParams = {
@@ -9,13 +10,22 @@ type TablesResponseParams = {
 
 const Home: NextPage = () => {
   const router = useRouter();
+  const [tableName, setTableName] = useState('');
 
-  const handleClick = async (event: Event) => {
-    const response = await fetch('/api/tables', { method: 'POST' });
+  const handleSubmit = async (event: Event) => {
+    event.preventDefault();
 
-    const params = await response.json() as TablesResponseParams;
+    const headers = { 'Content-Type': 'application/json' };
+    const body = JSON.stringify({ name: tableName });
+    const response = await fetch('/api/tables', { method: 'POST', body, headers });
 
-    router.push(`tables/${params.id}`);
+    if(response.status === 200) {
+      const params = await response.json() as TablesResponseParams;
+
+      router.push(`tables/${params.id}`);
+    } else {
+      console.log(response.statusText);
+    }
   };
 
   return (
@@ -31,8 +41,14 @@ const Home: NextPage = () => {
           Create a New Table
         </h1>
 
-        <form>
-          <input type="button" value="Create Table" onClick={handleClick}/>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={tableName}
+            placeholder="Table name"
+            onChange={(event) => setTableName(event.target.value)}
+          />
+          <input type="submit" value="Create Table" />
         </form>
       </main>
     </div>

@@ -49,6 +49,14 @@ const SharedTableSpace = ({ tableId, sharedDoc }: Props) => {
     setUrlValue('');
   }
 
+  const imageItem = (url: string, key: string) => {
+    return (
+      <li key={key}>
+        <img src={url} />
+      </li>
+    );
+  };
+
   return (
     <div>
       <form onSubmit={handleAddUrlSubmit}>
@@ -61,7 +69,7 @@ const SharedTableSpace = ({ tableId, sharedDoc }: Props) => {
         <input type="submit" value="Add Image" />
       </form>
       <ul>
-      { table.images.map((image, i) => <li key={image.url + i}>{image.url}</li>) }
+      { table.images.map((image, i) => imageItem(image.url, image.url + i)) }
       </ul>
     </div>
   );

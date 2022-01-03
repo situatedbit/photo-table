@@ -7,21 +7,7 @@ var json0 = require('ot-json0');
 
 ShareDB.types.register(json0.type);
 var backend = new ShareDB();
-createDoc(startServer);
-
-// Create initial document then fire callback
-function createDoc(callback) {
-  var connection = backend.connect();
-  var doc = connection.get('tables', 'empty');
-  doc.fetch(function(err) {
-    if (err) throw err;
-    if (doc.type === null) {
-      doc.create({ images: [ { url: 'https://situatedbit.com/wp-content/uploads/2021/08/2021-08-23-0437-cropped-of-2021-08-10-06-web-1800w.jpg' }] }, json0.type.uri, callback);
-      return;
-    }
-    callback();
-  });
-}
+startServer();
 
 function startServer() {
   // Create a web server to serve files and listen to WebSocket connections

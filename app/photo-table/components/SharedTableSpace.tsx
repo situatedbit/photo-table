@@ -48,12 +48,21 @@ const SharedTableSpace = ({ tableId, sharedDoc }: Props) => {
     sharedDoc.submitOp(op);
 
     setUrlValue('');
-  }
+  };
 
-  const imageItem = (url: string, key: string) => {
+  const handleRemoveClick = (index: number) => {
+    const path = ['images', index];
+    const image = table.images[index];
+    const op = [{ p: path, ld: image }];
+
+    sharedDoc.submitOp(op);
+  };
+
+  const imageItem = (url: string, index:number) => {
     return (
-      <li key={key}>
+      <li key={url + index}>
         <img src={url} />
+        <button onClick={() => handleRemoveClick(index)}>Remove</button>
       </li>
     );
   };
@@ -70,7 +79,7 @@ const SharedTableSpace = ({ tableId, sharedDoc }: Props) => {
         <input type="submit" value="Add Image" />
       </form>
       <ul>
-      { table.images.map((image, i) => imageItem(image.url, image.url + i)) }
+      { table.images.map((image, i) => imageItem(image.url, i)) }
       </ul>
     </div>
   );

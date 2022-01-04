@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic';
 
 // https://nextjs.org/docs/advanced-features/dynamic-import#with-no-ssr
 const SharedTable = dynamic(
-  () => import('../../components/shared-table'),
+  () => import('../../components/SharedTable'),
   { ssr: false },
 );
 

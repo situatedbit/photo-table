@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import SharedTableSpace from './shared-table-space';
+import SharedTableSpace from './SharedTableSpace';
 import { getSharedDoc } from '../models/client/sharedb';
 
 type Props = {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import styles from './SharedTableSpace.module.css';
 
 type Props = {
   tableId: string,
@@ -58,7 +59,7 @@ const SharedTableSpace = ({ tableId, sharedDoc }: Props) => {
   };
 
   return (
-    <div>
+    <div className={styles['shared-table-space']}>
       <form onSubmit={handleAddUrlSubmit}>
         <input
           type="url"

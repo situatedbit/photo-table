@@ -25,12 +25,14 @@ const SharedTable = ({ tableId }: Props) => {
 
     const handleLoad = () => {
       setTable({ ...newDoc.data });
+// DEBUG
       console.log('loaded', { ...newDoc.data });
     };
     newDoc.on('load', handleLoad);
 
     const handleOp = () => {
       setTable({ ...newDoc.data });
+// DEBUG
       console.log('op', { ...newDoc.data });
     };
     newDoc.on('op', handleOp);
@@ -54,7 +56,7 @@ const SharedTable = ({ tableId }: Props) => {
       },
     };
     const op = [{ p: path, li: image }];
-console.log('adding url', url);
+
     doc.submitOp(op);
   };
 
@@ -64,6 +66,13 @@ console.log('adding url', url);
 
     doc.submitOp(op);
   };
+
+  const handleImageMove = (image, index: number, direction: 'left' | 'top', increment: number) => {
+    const path = ['images', index, 'position', direction];
+    const op = { p: path, na: increment };
+
+    doc.submitOp(op);
+  }
 
   return (
     <>
@@ -75,6 +84,8 @@ console.log('adding url', url);
               key={image.url + index}
               image={image}
               onRemove={() => handleImageRemove(image, index)}
+              onMoveX={(image, increment) => handleImageMove(image, index, 'left', increment)}
+              onMoveY={(image, increment) => handleImageMove(image, index, 'top', increment)}
             />
           );
         })}

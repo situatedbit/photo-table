@@ -3,6 +3,12 @@
   position: absolute;
 }
 
+.controls {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
 .image img {
   width: 100%;
 }

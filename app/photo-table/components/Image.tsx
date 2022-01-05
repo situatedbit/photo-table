@@ -1,11 +1,16 @@
 import styles from './Image.module.css';
 
-function Image({ image, onRemove, onMoveX, onMoveY }) {
+function Image({ image, onRemove, onMoveX, onMoveY, onMoveToTop }) {
   const increment = 20;
 
+  const imageStyle = {
+    ...image.position,
+    zIndex: image.zIndex,
+  }
+
   return (
-    <div className={styles.image} style={{ ...image.position }}>
-      <img src={image.url} />
+    <div className={styles.image} style={imageStyle}>
+      <img src={image.url} onClick={() => onMoveToTop(image)}/>
       <form
         className={styles.controls}
         onSubmit={(event: Event) => event.preventDefault()}

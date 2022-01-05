@@ -54,6 +54,7 @@ const SharedTable = ({ tableId }: Props) => {
         left: 0,
         top: 0,
       },
+      zIndex: 0,
     };
     const op = [{ p: path, li: image }];
 
@@ -74,6 +75,15 @@ const SharedTable = ({ tableId }: Props) => {
     doc.submitOp(op);
   }
 
+  const handleImageMoveToTop = (image, index: number) => {
+    const maxZ = Math.max(...table.images.map(image => image.zIndex));
+    const increment = maxZ + 1 - image.zIndex;
+    const path = ['images', index, 'zIndex'];
+    const op = { p: path, na: increment };
+
+    doc.submitOp(op);
+  }
+
   return (
     <>
       <TableBar onAddUrl={handleAddUrl} />
@@ -86,6 +96,7 @@ const SharedTable = ({ tableId }: Props) => {
               onRemove={() => handleImageRemove(image, index)}
               onMoveX={(image, increment) => handleImageMove(image, index, 'left', increment)}
               onMoveY={(image, increment) => handleImageMove(image, index, 'top', increment)}
+              onMoveToTop={() => handleImageMoveToTop(image, index)}
             />
           );
         })}

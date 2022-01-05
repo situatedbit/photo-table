@@ -1,6 +1,6 @@
 import styles from './Image.module.css';
 
-function Image({ image, onRemove, onMoveX, onMoveY, onMoveToTop }) {
+function Image({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMoveToBottom }) {
   const increment = 20;
 
   const imageStyle = {
@@ -20,6 +20,7 @@ function Image({ image, onRemove, onMoveX, onMoveY, onMoveToTop }) {
         <button onClick={() => onMoveX(image, increment)}>🠆</button>
         <button onClick={() => onMoveY(image, -increment)}>🠅</button>
         <button onClick={() => onMoveY(image, increment)}>🠇</button>
+        <button onClick={() => onMoveToBottom(image)}>❐</button>
       </form>
     </div>
   );

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import Image from './Image';
+import ImageContainer from './ImageContainer';
 import TableBar from './TableBar';
 import Viewport from './Viewport'
-import { getSharedDoc } from '../models/client/sharedb';
+import { getSharedDoc } from '../../../models/client/sharedb';
 import styles from './SharedTable.module.css';
 
 type Props = {
@@ -102,7 +102,7 @@ const SharedTable = ({ tableId }: Props) => {
         <Viewport>
           { table.images.map((image, index) => {
             return(
-              <Image
+              <ImageContainer
                 key={image.url + index}
                 image={image}
                 onRemove={() => handleImageRemove(image, index)}

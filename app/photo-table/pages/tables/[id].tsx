@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 
 // https://nextjs.org/docs/advanced-features/dynamic-import#with-no-ssr
 const SharedTable = dynamic(
-  () => import('../../components/SharedTable'),
+  () => import('./components/SharedTable'),
   { ssr: false },
 );
 

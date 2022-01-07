@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import styles from './Image.module.css';
+import styles from './ImageContainer.module.css';
 
 function Image({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMoveToBottom }) {
   const [isMoving, setIsMoving] = useState(false);

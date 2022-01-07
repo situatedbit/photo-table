@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import type { GetServerSideProps } from 'next';
 import dynamic from 'next/dynamic';
 
@@ -20,8 +21,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const TablePage = ({ id }: Props) => {
   return (
     <>
-      <div>Table {id}</div>
-      <SharedTable tableId={id} />
+      <Head>
+        <title>Table: {id}</title>
+      </Head>
+      <main>
+        <SharedTable tableId={id} />
+      </main>
     </>
   );
 }

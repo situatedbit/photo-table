@@ -3,6 +3,7 @@ import Image from './Image';
 import TableBar from './TableBar';
 import Viewport from './Viewport'
 import { getSharedDoc } from '../models/client/sharedb';
+import styles from './SharedTable.module.css';
 
 type Props = {
   tableId: string,
@@ -93,24 +94,28 @@ const SharedTable = ({ tableId }: Props) => {
   }
 
   return (
-    <>
-      <TableBar onAddUrl={handleAddUrl} />
-      <Viewport>
-        { table.images.map((image, index) => {
-          return(
-            <Image
-              key={image.url + index}
-              image={image}
-              onRemove={() => handleImageRemove(image, index)}
-              onMoveX={(image, increment) => handleImageMove(image, index, 'left', increment)}
-              onMoveY={(image, increment) => handleImageMove(image, index, 'top', increment)}
-              onMoveToTop={() => handleImageMoveToTop(image, index)}
-              onMoveToBottom={() => handleImageMoveToBottom(image, index)}
-            />
-          );
-        })}
-      </Viewport>
-    </>
+    <div className={styles['table-wrapper']}>
+      <div className={styles.bar}>
+        <TableBar onAddUrl={handleAddUrl} />
+      </div>
+      <div className={styles.viewport}>
+        <Viewport>
+          { table.images.map((image, index) => {
+            return(
+              <Image
+                key={image.url + index}
+                image={image}
+                onRemove={() => handleImageRemove(image, index)}
+                onMoveX={(image, increment) => handleImageMove(image, index, 'left', increment)}
+                onMoveY={(image, increment) => handleImageMove(image, index, 'top', increment)}
+                onMoveToTop={() => handleImageMoveToTop(image, index)}
+                onMoveToBottom={() => handleImageMoveToBottom(image, index)}
+              />
+            );
+          })}
+        </Viewport>
+      </div>
+    </div>
   );
 };
 

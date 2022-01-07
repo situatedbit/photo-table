@@ -1,0 +1,17 @@
+.table-wrapper {
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.bar {
+  flex: none;
+}
+
+.viewport {
+  flex: 1 1 auto;
+}

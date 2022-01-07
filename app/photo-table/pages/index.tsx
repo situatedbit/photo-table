@@ -29,7 +29,7 @@ const Home: NextPage = () => {
   };
 
   return (
-    <div>
+    <>
       <Head>
         <title>PhotoTable: Create a New Table</title>
         <meta name="description" content="Shared table space for curating images" />
@@ -51,7 +51,7 @@ const Home: NextPage = () => {
           <input type="submit" value="Create Table" />
         </form>
       </main>
-    </div>
+    </>
   )
 }
 

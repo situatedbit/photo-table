@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import styles from './TableBar.module.css';
 
 type Props = {
   onAddUrl: (url: string) => void,
@@ -15,7 +16,7 @@ function TableBar({ onAddUrl }: Props) {
   }
 
   return (
-    <div>
+    <div className={styles.bar}>
       <form onSubmit={handleSubmit}>
         <input
           type="url"

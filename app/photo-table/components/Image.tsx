@@ -5,7 +5,6 @@ function Image({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMoveToBottom 
   const [isMoving, setIsMoving] = useState(false);
   const [startMoveOffset, setStartMoveOffset] = useState({ x : 0, y: 0 });
   const [midMoveOffset, setMidMoveOffset] = useState({ left: 0, top: 0 });
-  const increment = 20;
 
   const imageStyle = {
     left: image.position.left + midMoveOffset.left,

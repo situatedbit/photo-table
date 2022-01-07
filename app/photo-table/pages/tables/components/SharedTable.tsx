@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import ImageContainer from './ImageContainer';
-import TableBar from './TableBar';
+import Toolbar from './Toolbar';
 import Viewport from './Viewport'
 import { getSharedDoc } from '../../../models/client/sharedb';
 import styles from './SharedTable.module.css';
@@ -96,7 +96,7 @@ const SharedTable = ({ tableId }: Props) => {
   return (
     <div className={styles['table-wrapper']}>
       <div className={styles.bar}>
-        <TableBar onAddUrl={handleAddUrl} />
+        <Toolbar onAddUrl={handleAddUrl} />
       </div>
       <div className={styles.viewport}>
         <Viewport>

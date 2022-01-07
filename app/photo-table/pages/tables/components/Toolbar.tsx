@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import styles from './TableBar.module.css';
+import styles from './Toolbar.module.css';
 
 type Props = {
   onAddUrl: (url: string) => void,
 };
 
-function TableBar({ onAddUrl }: Props) {
+function Toolbar({ onAddUrl }: Props) {
   const [urlValue, setUrlValue] = useState('');
 
   const handleSubmit = (event: Event) => {
@@ -30,4 +30,4 @@ function TableBar({ onAddUrl }: Props) {
   );
 }
 
-export default TableBar;
+export default Toolbar;

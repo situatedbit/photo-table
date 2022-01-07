@@ -4,6 +4,7 @@ import Toolbar from './Toolbar';
 import Viewport from './Viewport'
 import { getSharedDoc } from '../../../models/client/sharedb';
 import styles from './SharedTable.module.css';
+import { fetchImage, Image } from '../../../models/image';
 
 type Props = {
   tableId: string,
@@ -47,16 +48,23 @@ const SharedTable = ({ tableId }: Props) => {
     };
   }, [tableId]);
 
-  const handleAddUrl = (url: string) => {
+  const handleAddUrl = async (url: string) => {
     const path = ['images', table.images.length];
-    const image = {
+
+    const fetchedImage = await fetchImage(url);
+    const width = fetchedImage.naturalWidth;
+    const height = fetchedImage.naturalHeight;
+
+    const image: Image = {
       url,
-      position: {
-        left: 0,
-        top: 0,
-      },
+      width,
+      height,
+      // Center on origin
+      x: -width / 2,
+      y: height / 2,
       zIndex: 0,
     };
+
     const op = [{ p: path, li: image }];
 
     doc.submitOp(op);
@@ -69,8 +77,8 @@ const SharedTable = ({ tableId }: Props) => {
     doc.submitOp(op);
   };
 
-  const handleImageMove = (image, index: number, direction: 'left' | 'top', increment: number) => {
-    const path = ['images', index, 'position', direction];
+  const handleImageMove = (image, index: number, axis: 'x' | 'y', increment: number) => {
+    const path = ['images', index, axis];
     const op = { p: path, na: increment };
 
     doc.submitOp(op);
@@ -106,8 +114,8 @@ const SharedTable = ({ tableId }: Props) => {
                 key={image.url + index}
                 image={image}
                 onRemove={() => handleImageRemove(image, index)}
-                onMoveX={(image, increment) => handleImageMove(image, index, 'left', increment)}
-                onMoveY={(image, increment) => handleImageMove(image, index, 'top', increment)}
+                onMoveX={(image, increment) => handleImageMove(image, index, 'x', increment)}
+                onMoveY={(image, increment) => handleImageMove(image, index, 'y', increment)}
                 onMoveToTop={() => handleImageMoveToTop(image, index)}
                 onMoveToBottom={() => handleImageMoveToBottom(image, index)}
               />

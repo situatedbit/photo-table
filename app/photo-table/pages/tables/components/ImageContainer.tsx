@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import styles from './ImageContainer.module.css';
 
-function Image({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMoveToBottom }) {
+function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMoveToBottom }) {
   const [isMoving, setIsMoving] = useState(false);
   const [startMoveOffset, setStartMoveOffset] = useState({ x : 0, y: 0 });
   const [midMoveOffset, setMidMoveOffset] = useState({ left: 0, top: 0 });
 
   const imageStyle = {
-    left: image.position.left + midMoveOffset.left,
-    top: image.position.top + midMoveOffset.top,
+    left: image.x + midMoveOffset.left,
+    top: image.y + midMoveOffset.top,
     zIndex: image.zIndex,
   }
 
@@ -70,4 +70,4 @@ function Image({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMoveToBottom 
   );
 }
 
-export default Image;
+export default ImageContainer;

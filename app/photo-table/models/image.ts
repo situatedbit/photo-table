@@ -12,5 +12,12 @@ export async function fetchImage(url: string): HTMLImageElement {
   const image = new Image();
   image.src = URL.createObjectURL(blob);
 
-  return image;
+  return new Promise((resolve) => {
+    const handleImageLoad = () => {
+      image.removeEventListener('load', handleImageLoad);
+      resolve(image);
+    };
+
+    image.addEventListener('load', handleImageLoad);
+  });
 }

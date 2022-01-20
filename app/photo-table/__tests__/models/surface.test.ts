@@ -1,5 +1,5 @@
 import { Rectangle } from './rectangle';
-import { boundingBox, Surface } from './surface';
+import { boundingBox, Surface } from '../../models/surface';
 
 describe('boundingBox', () => {
   test('any empty box has no width or height beyond margin', () => {

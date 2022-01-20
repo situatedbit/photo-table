@@ -2,16 +2,17 @@
   background-color: pink;
   height: 100%;
   overflow: hidden;
+  position: relative;
   width: 100%;
+}
+
+.surface {
+  background-color: purple;
+  position: absolute;
 }
 
 .viewport ul {
   margin: 0;
   list-style-type: none;
   padding: 0;
-}
-
-.surface {
-  background-color: purple;
-  position: relative;
 }

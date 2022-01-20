@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import styles from './ImageContainer.module.css';
 
-function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMoveToBottom }) {
+function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMoveToBottom, surfaceWidth, surfaceHeight }) {
   const [isMoving, setIsMoving] = useState(false);
+  // Move offset values operate in surface logical space, not as CSS coordinates
   const [startMoveOffset, setStartMoveOffset] = useState({ x : 0, y: 0 });
-  const [midMoveOffset, setMidMoveOffset] = useState({ left: 0, top: 0 });
+  const [midMoveOffset, setMidMoveOffset] = useState({ x: 0, y: 0 });
 
+  // Convert surface logical coordinates into CSS coordinates on surface
   const imageStyle = {
-    left: image.x + midMoveOffset.left,
-    top: image.y + midMoveOffset.top,
+    left: surfaceWidth / 2 + image.x + midMoveOffset.x,
+    top: surfaceHeight / 2 - image.y - midMoveOffset.y,
     zIndex: image.zIndex,
   }
 
@@ -28,24 +30,24 @@ function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMove
       return;
     }
 
-    const left = event.clientX - startMoveOffset.x;
-    const top = event.clientY - startMoveOffset.y;
+    const x = event.clientX - startMoveOffset.x;
+    const y = startMoveOffset.y - event.clientY;
 
-    setMidMoveOffset({ left, top });
+    setMidMoveOffset({ x, y });
   };
 
   const handleMouseUp = (event: Event) => {
     if(event.button === 0) {
       setStartMoveOffset({ x: 0, y: 0 });
-      setMidMoveOffset({ left: 0, top: 0 });
+      setMidMoveOffset({ x: 0, y: 0 });
       setIsMoving(false);
 
-      if(midMoveOffset.left != 0) {
-        onMoveX(image, midMoveOffset.left);
+      if(midMoveOffset.x != 0) {
+        onMoveX(image, midMoveOffset.x);
       }
 
-      if(midMoveOffset.top != 0) {
-        onMoveY(image, midMoveOffset.top);
+      if(midMoveOffset.y != 0) {
+        onMoveY(image, midMoveOffset.y);
       }
     }
   };

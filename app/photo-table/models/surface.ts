@@ -21,3 +21,12 @@ export function boundingBox(rectangles: Rectangle[], margin: number): Surface {
 
   return { height, width };
 }
+
+export function centeredOnOrigin(width: number, height: number): Rectangle {
+  return {
+    width,
+    height,
+    x: -(width / 2),
+    y: height / 2,
+  }
+}

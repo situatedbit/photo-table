@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import ImageContainer from './ImageContainer';
 import Toolbar from './Toolbar';
 import Viewport from './Viewport'
+import { Rectangle } from '../../../rectangle';
+import { boundingBox, centeredOnOrigin } from '../../../models/surface';
 import { getSharedDoc } from '../../../models/client/sharedb';
 import styles from './SharedTable.module.css';
 import { fetchImage, Image } from '../../../models/image';
@@ -10,13 +12,19 @@ type Props = {
   tableId: string,
 }
 
+const surfaceMargin = 50; // Buffer of logical space around all surface content
 const emptyTable = {
   images: [],
 };
+const initialViewport = centeredOnOrigin(0, 0);
 
 const SharedTable = ({ tableId }: Props) => {
   const [doc, setDoc] = useState(null)
   const [table, setTable] = useState(emptyTable);
+  // Viewport size will be based on DOM element size. Initialize it to a tiny
+  // size, then wait for the Viewport component to synchronize the logical
+  // viewport size with the containing dom element.
+  const [viewport, setViewport] = useState(initialViewport);
 
   useEffect(() => {
     const newDoc = getSharedDoc('tables', tableId);
@@ -101,18 +109,38 @@ const SharedTable = ({ tableId }: Props) => {
     doc.submitOp(op);
   }
 
+  const handleViewportChange = (viewport: Rectangle) => {
+    // If this is the first update to viewport, center it on the origin with
+    // its new width and height.
+    setViewport((previousViewport) => {
+      if (previousViewport === initialViewport) {
+        return centeredOnOrigin(viewport.width, viewport.height);
+      } else {
+        return viewport;
+      }
+    });
+  };
+
+  const surface = boundingBox([...table.images, viewport], surfaceMargin);
+
   return (
     <div className={styles['table-wrapper']}>
       <div className={styles.bar}>
         <Toolbar onAddUrl={handleAddUrl} />
       </div>
       <div className={styles.viewport}>
-        <Viewport>
+        <Viewport
+          surface={surface}
+          viewport={viewport}
+          onViewportChange={handleViewportChange}
+        >
           { table.images.map((image, index) => {
             return(
               <ImageContainer
                 key={image.url + index}
                 image={image}
+                surfaceWidth={surface.width}
+                surfaceHeight={surface.height}
                 onRemove={() => handleImageRemove(image, index)}
                 onMoveX={(image, increment) => handleImageMove(image, index, 'x', increment)}
                 onMoveY={(image, increment) => handleImageMove(image, index, 'y', increment)}

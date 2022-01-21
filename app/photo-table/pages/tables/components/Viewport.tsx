@@ -80,7 +80,7 @@ function Viewport({ viewport, surface, children, onViewportChange }: ViewportPro
   };
 
   const handleMouseUp = (event: Event) => {
-    if(event.button === 0) {
+    if(isDragging && event.button === 0) {
       setStartDragViewport(null);
       setStartDragPosition(null);
       setIsDragging(false);

@@ -22,6 +22,9 @@ function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMove
       setStartMoveOffset({ x: event.clientX, y: event.clientY });
       setIsMoving(true);
     }
+
+    // Do not initiate dragging behavior on parent elements
+    event.stopPropagation();
   };
 
   const handleMouseMove = (event: Event) => {
@@ -37,7 +40,7 @@ function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMove
   };
 
   const handleMouseUp = (event: Event) => {
-    if(event.button === 0) {
+    if(isMoving && event.button === 0) {
       setStartMoveOffset({ x: 0, y: 0 });
       setMidMoveOffset({ x: 0, y: 0 });
       setIsMoving(false);
@@ -52,15 +55,17 @@ function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMove
     }
   };
 
+  const imgClassName = isMoving ? styles.imageDragging : styles.image;
+
   return (
     <div
-      className={styles.image}
+      className={styles.imageContainer}
       style={imageStyle}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
     >
-      <img src={image.url} draggable="false" />
+      <img className={imgClassName} src={image.url} draggable="false" />
       <form
         className={styles.controls}
         onSubmit={(event: Event) => event.preventDefault()}

@@ -1,5 +1,4 @@
-.image {
-  max-width: 50vw;
+.imageContainer {
   position: absolute;
 }
 
@@ -9,6 +8,12 @@
   top: 0;
 }
 
-.image img {
+ .image {
+  cursor: grab;
   width: 100%;
+}
+
+.imageDragging {
+  composes: image;
+  cursor: grabbing;
 }

@@ -22,11 +22,24 @@ export function boundingBox(rectangles: Rectangle[], margin: number): Surface {
   return { height, width };
 }
 
-export function centeredOnOrigin(width: number, height: number): Rectangle {
+export function centerOnOrigin(width: number, height: number): Rectangle {
+  return centerOnRectangle(width, height, { x: 0, y: 0, width: 0, height: 0 });
+}
+
+function centerOfRectangle(rectangle: Rectangle): { x: number, y: number } {
+  return {
+    x: rectangle.x + rectangle.width / 2,
+    y: rectangle.y - rectangle.height / 2,
+  };
+}
+
+export function centerOnRectangle(width: number, height: number, rectangle: Rectangle): Rectangle {
+  const center = centerOfRectangle(rectangle);
+
   return {
     width,
     height,
-    x: -(width / 2),
-    y: height / 2,
-  }
+    x: center.x - width / 2,
+    y: center.y + height / 2,
+  };
 }

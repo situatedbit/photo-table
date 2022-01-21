@@ -3,7 +3,7 @@ import ImageContainer from './ImageContainer';
 import Toolbar from './Toolbar';
 import Viewport from './Viewport'
 import { Rectangle } from '../../../rectangle';
-import { boundingBox, centeredOnOrigin } from '../../../models/surface';
+import { boundingBox, centerOnOrigin, centerOnRectangle } from '../../../models/surface';
 import { getSharedDoc } from '../../../models/client/sharedb';
 import styles from './SharedTable.module.css';
 import { fetchImage, Image } from '../../../models/image';
@@ -16,7 +16,7 @@ const surfaceMargin = 50; // Buffer of logical space around all surface content
 const emptyTable = {
   images: [],
 };
-const initialViewport = centeredOnOrigin(0, 0);
+const initialViewport = { x: 0, y: 0, width: 0, height: 0 };
 
 const SharedTable = ({ tableId }: Props) => {
   const [doc, setDoc] = useState(null)
@@ -64,12 +64,8 @@ const SharedTable = ({ tableId }: Props) => {
     const height = fetchedImage.naturalHeight;
 
     const image: Image = {
+      ...centerOnRectangle(width, height, viewport),
       url,
-      width,
-      height,
-      // Center on origin
-      x: -width / 2,
-      y: height / 2,
       zIndex: 0,
     };
 
@@ -114,7 +110,7 @@ const SharedTable = ({ tableId }: Props) => {
     // its new width and height.
     setViewport((previousViewport) => {
       if (previousViewport === initialViewport) {
-        return centeredOnOrigin(viewport.width, viewport.height);
+        return centerOnOrigin(viewport.width, viewport.height);
       } else {
         return viewport;
       }

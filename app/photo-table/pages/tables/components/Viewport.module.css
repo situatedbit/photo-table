@@ -1,5 +1,4 @@
 .viewport {
-  background-color: pink;
   cursor: grab;
   height: 100%;
   overflow: hidden;
@@ -13,7 +12,6 @@
 }
 
 .surface {
-  background-color: purple;
   position: absolute;
 }
 

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Rectangle } from '../../../models/rectangle';
 import { Surface } from '../../../models/surface';
 import styles from './Viewport.module.css';
@@ -12,6 +12,9 @@ interface ViewportProps {
 
 function Viewport({ viewport, surface, children, onViewportChange }: ViewportProps) {
   const viewportDiv = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startDragViewport, setStartDragViewport] = useState(null);
+  const [startDragPosition, setStartDragPosition] = useState(null);
 
   // Logically, viewport exists within the surface space as a rectangle, but
   // in the DOM it's implemented as a container for the surface element. The
@@ -53,10 +56,49 @@ function Viewport({ viewport, surface, children, onViewportChange }: ViewportPro
     return () => window.removeEventListener('resize', handleWindowResize);
   })
 
+  const handleMouseDown = (event: Event) => {
+    // button 0 is the primary button; ignore right clicks, e.g.
+    if(event.button === 0) {
+      setStartDragViewport(viewport);
+      setStartDragPosition({ x: event.clientX, y: event.clientY });
+      setIsDragging(true);
+    }
+  };
+
+  const handleMouseMove = (event: Event) => {
+    if(isDragging) {
+      // Use mouse movements during drag action as relative offset. Until the
+      // drag is finished, update the viewport with the coordinates of the
+      // viewport before the drag action started, offset by the movement of the
+      // mouse during the drag action.
+      onViewportChange({
+        ...viewport,
+        x: startDragViewport.x - (event.clientX - startDragPosition.x),
+        y: startDragViewport.y + (event.clientY - startDragPosition.y),
+      });
+    }
+  };
+
+  const handleMouseUp = (event: Event) => {
+    if(event.button === 0) {
+      setStartDragViewport(null);
+      setStartDragPosition(null);
+      setIsDragging(false);
+    }
+  };
+
+  const viewportClassName = isDragging ? styles.viewportDragging : styles.viewport;
+
   return (
-    <div className={styles.viewport} ref={viewportDiv}>
-      <div className={styles.surface} style={{ ...surfaceStyle }}>
-        <ul>
+    <div className={viewportClassName} ref={viewportDiv}>
+      <div
+        className={styles.surface}
+        style={{ ...surfaceStyle }}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+      >
+        <ul className={styles.list}>
           { children }
         </ul>
       </div>

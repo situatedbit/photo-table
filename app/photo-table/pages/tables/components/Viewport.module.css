@@ -1,9 +1,15 @@
 .viewport {
   background-color: pink;
+  cursor: grab;
   height: 100%;
   overflow: hidden;
   position: relative;
   width: 100%;
+}
+
+.viewportDragging {
+  composes: viewport;
+  cursor: grabbing;
 }
 
 .surface {
@@ -11,7 +17,7 @@
   position: absolute;
 }
 
-.viewport ul {
+.list {
   margin: 0;
   list-style-type: none;
   padding: 0;

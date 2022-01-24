@@ -12,11 +12,13 @@
 }
 
 .surface {
+  overflow: hidden;
   position: absolute;
 }
 
 .list {
   margin: 0;
   list-style-type: none;
+  overflow: hidden;
   padding: 0;
 }

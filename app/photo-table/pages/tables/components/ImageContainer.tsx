@@ -8,7 +8,7 @@ function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMove
   const [midMoveOffset, setMidMoveOffset] = useState({ x: 0, y: 0 });
 
   // Convert surface logical coordinates into CSS coordinates on surface
-  const imageStyle = {
+  const imageContainerStyle = {
     left: surfaceWidth / 2 + image.x + midMoveOffset.x,
     top: surfaceHeight / 2 - image.y - midMoveOffset.y,
     zIndex: image.zIndex,
@@ -60,18 +60,30 @@ function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMove
   return (
     <div
       className={styles.imageContainer}
-      style={imageStyle}
+      style={imageContainerStyle}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
     >
-      <img className={imgClassName} src={image.url} draggable="false" />
+      <img
+        className={imgClassName}
+        draggable="false"
+        height={image.height}
+        src={image.url}
+        width={image.width}
+      />
       <form
         className={styles.controls}
         onSubmit={(event: Event) => event.preventDefault()}
       >
-        <button onClick={() => onMoveToBottom(image)}>⤓</button>
-        <button onClick={() => onRemove(image)}>✕</button>
+        <button
+          className="p-1"
+          onClick={() => onMoveToBottom(image)}
+        >⤓</button>
+        <button
+          className="p-1"
+          onClick={() => onRemove(image)}
+        >✕</button>
       </form>
     </div>
   );

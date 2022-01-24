@@ -8,9 +8,8 @@
   top: 0;
 }
 
- .image {
+.image {
   cursor: grab;
-  width: 100%;
 }
 
 .imageDragging {

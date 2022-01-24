@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import styles from './Toolbar.module.css';
 
 type Props = {
   onAddUrl: (url: string) => void,
@@ -16,15 +15,20 @@ function Toolbar({ onAddUrl }: Props) {
   }
 
   return (
-    <div className={styles.bar}>
+    <div className="bg-slate-50 border-b-2 p-2">
       <form onSubmit={handleSubmit}>
         <input
+          className="bg-slate-100 border-slate-200 border-2 p-1 mr-2"
           type="url"
           placeholder="Image URL"
           value={urlValue}
           onChange={(event: Event) => setUrlValue(event.target.value)}
         />
-        <input type="submit" value="Add Image" />
+        <input
+          className="bg-slate-200 border-2 p-1"
+          type="submit"
+          value="Add Image"
+        />
       </form>
     </div>
   );

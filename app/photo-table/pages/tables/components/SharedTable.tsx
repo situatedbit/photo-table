@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import ImageContainer from './ImageContainer';
 import Toolbar from './Toolbar';
 import Viewport from './Viewport'
-import { Rectangle } from '../../../rectangle';
+import { largestDimension, Rectangle } from '../../../models/rectangle';
 import { boundingBox, centerOnOrigin, centerOnRectangle } from '../../../models/surface';
 import { getSharedDoc } from '../../../models/client/sharedb';
 import styles from './SharedTable.module.css';
@@ -12,7 +12,6 @@ type Props = {
   tableId: string,
 }
 
-const surfaceMargin = 50; // Buffer of logical space around all surface content
 const emptyTable = {
   images: [],
 };
@@ -117,7 +116,13 @@ const SharedTable = ({ tableId }: Props) => {
     });
   };
 
-  const surface = boundingBox([...table.images, viewport], surfaceMargin);
+  // Surface is large enough to contain any image or the viewport in any
+  // of its quadrants. Furthermore, even in the case where the viewport
+  // is the largest rectangle on the surface, the margin allows for any image
+  // to be dragged to any viewport edge without bumping the edge of the surface.
+  const rectangles = [...table.images, viewport];
+  const surfaceMargin = largestDimension(rectangles);
+  const surface = boundingBox(rectangles, surfaceMargin);
 
   return (
     <div className={styles['table-wrapper']}>

@@ -36,19 +36,24 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <h1>
+      <main className="p-4">
+        <h1 className="text-2xl pb-4">
           Create a New Table
         </h1>
 
         <form onSubmit={handleSubmit}>
           <input
+            className="bg-slate-100 border-slate-200 border-2 p-1 mr-2"
             type="text"
             value={tableName}
             placeholder="Table name"
             onChange={(event) => setTableName(event.target.value)}
           />
-          <input type="submit" value="Create Table" />
+          <input
+            className="bg-slate-200 border-2 p-1"
+            type="submit"
+            value="Create Table"
+          />
         </form>
       </main>
     </>

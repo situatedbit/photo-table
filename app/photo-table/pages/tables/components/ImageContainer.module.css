@@ -1,5 +1,24 @@
-.imageContainer {
+.draggableContainer {
   position: absolute;
+}
+
+/*
+  During drag event, the container stretches to fill the surface, and
+  the internal image container is positioned with the appropriate offset
+  from the upper left.
+*/
+.draggableContainerDragging {
+  composes: draggableContainer;
+  cursor: grabbing;
+  height: 100%;
+  left: 0;
+  top: 0;
+  width: 100%;
+}
+
+.imageContainer {
+  position: relative;
+  width: fit-content;
 }
 
 .controls {

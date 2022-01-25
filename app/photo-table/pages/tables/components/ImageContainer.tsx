@@ -2,10 +2,10 @@ import { useState } from 'react';
 import styles from './ImageContainer.module.css';
 
 function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMoveToBottom, surfaceWidth, surfaceHeight }) {
-  const [isMoving, setIsMoving] = useState(false);
-  // Move offset values operate in surface logical space, not as CSS coordinates
-  const [startMoveOffset, setStartMoveOffset] = useState({ x : 0, y: 0 });
-  const [midMoveOffset, setMidMoveOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  // Drag offset values operate in surface logical space, not as CSS coordinates
+  const [startDragOffset, setStartDragOffset] = useState({ x : 0, y: 0 });
+  const [midDragOffset, setMidDragOffset] = useState({ x: 0, y: 0 });
 
   // Convert surface logical coordinates into CSS coordinates on surface element.
   // By default these position properties will be applied to the entire
@@ -14,17 +14,17 @@ function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMove
   // component while the tree re-renders. During that time, these position
   // properties are applied to the inner container.
   const positionWithinSurface = {
-    left: surfaceWidth / 2 + image.x + midMoveOffset.x,
-    top: surfaceHeight / 2 - image.y - midMoveOffset.y,
+    left: surfaceWidth / 2 + image.x + midDragOffset.x,
+    top: surfaceHeight / 2 - image.y - midDragOffset.y,
   };
 
   const imageContainerStyle = {
-    ...(isMoving ? positionWithinSurface : {}),
+    ...(isDragging ? positionWithinSurface : {}),
   };
 
   const draggableContainerStyle = {
     zIndex: image.zIndex,
-    ...(isMoving ? {} : positionWithinSurface),
+    ...(isDragging ? {} : positionWithinSurface),
   };
 
   const handleMouseDown = (event: Event) => {
@@ -32,8 +32,8 @@ function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMove
     if(event.button === 0) {
       onMoveToTop(image);
 
-      setStartMoveOffset({ x: event.clientX, y: event.clientY });
-      setIsMoving(true);
+      setStartDragOffset({ x: event.clientX, y: event.clientY });
+      setIsDragging(true);
     }
 
     // Do not initiate dragging behavior on parent elements
@@ -41,35 +41,35 @@ function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMove
   };
 
   const handleMouseMove = (event: Event) => {
-    if(!isMoving) {
+    if(!isDragging) {
       // Just ignore, don't prevent event bubble
       return;
     }
 
-    const x = event.clientX - startMoveOffset.x;
-    const y = startMoveOffset.y - event.clientY;
+    const x = event.clientX - startDragOffset.x;
+    const y = startDragOffset.y - event.clientY;
 
-    setMidMoveOffset({ x, y });
+    setMidDragOffset({ x, y });
   };
 
   const handleMouseUp = (event: Event) => {
-    if(isMoving && event.button === 0) {
-      setStartMoveOffset({ x: 0, y: 0 });
-      setMidMoveOffset({ x: 0, y: 0 });
-      setIsMoving(false);
+    if(isDragging && event.button === 0) {
+      setStartDragOffset({ x: 0, y: 0 });
+      setMidDragOffset({ x: 0, y: 0 });
+      setIsDragging(false);
 
-      if(midMoveOffset.x != 0) {
-        onMoveX(image, midMoveOffset.x);
+      if(midDragOffset.x != 0) {
+        onMoveX(image, midDragOffset.x);
       }
 
-      if(midMoveOffset.y != 0) {
-        onMoveY(image, midMoveOffset.y);
+      if(midDragOffset.y != 0) {
+        onMoveY(image, midDragOffset.y);
       }
     }
   };
 
-  const draggableContainerClassName = isMoving ? styles.draggableContainerDragging : styles.draggableContainer;
-  const imgClassName = isMoving ? styles.imageDragging : styles.image;
+  const draggableContainerClassName = isDragging ? styles.draggableContainerDragging : styles.draggableContainer;
+  const imgClassName = isDragging ? styles.imageDragging : styles.image;
 
   return (
     <div

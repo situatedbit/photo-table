@@ -73,6 +73,12 @@ const SharedTable = ({ tableId }: Props) => {
     doc.submitOp(op);
   };
 
+  const handleCenterOnOrigin = () => {
+    const { x, y } = centerOnOrigin(viewport.width, viewport.height);
+
+    setViewport({ ...viewport, x, y });
+  }
+
   const handleImageRemove = (image, index: number) => {
     const path = ['images', index];
     const op = [{ p: path, ld: image }];
@@ -127,7 +133,10 @@ const SharedTable = ({ tableId }: Props) => {
   return (
     <div className={styles['table-wrapper']}>
       <div className={styles.bar}>
-        <Toolbar onAddUrl={handleAddUrl} />
+        <Toolbar
+          onAddUrl={handleAddUrl}
+          onCenterOnOrigin={handleCenterOnOrigin}
+        />
       </div>
       <div className={styles.viewport}>
         <Viewport

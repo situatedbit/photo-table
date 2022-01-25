@@ -2,9 +2,10 @@ import { useState } from 'react';
 
 type Props = {
   onAddUrl: (url: string) => void,
+  onCenterOnOrigin: () => void,
 };
 
-function Toolbar({ onAddUrl }: Props) {
+function Toolbar({ onAddUrl, onCenterOnOrigin }: Props) {
   const [urlValue, setUrlValue] = useState('');
 
   const handleSubmit = (event: Event) => {
@@ -16,9 +17,12 @@ function Toolbar({ onAddUrl }: Props) {
 
   return (
     <div className="bg-slate-50 border-b-2 p-2">
-      <form onSubmit={handleSubmit}>
+      <form
+        className="flex gap-2"
+        onSubmit={handleSubmit}
+      >
         <input
-          className="bg-slate-100 border-slate-200 border-2 p-1 mr-2"
+          className="bg-slate-100 border-slate-200 border-2 p-1"
           type="url"
           placeholder="Image URL"
           value={urlValue}
@@ -29,6 +33,14 @@ function Toolbar({ onAddUrl }: Props) {
           type="submit"
           value="Add Image"
         />
+        <button
+          className="bg-slate-200 border-2 p-1"
+          onClick={onCenterOnOrigin}
+          title="Return to center"
+          type="button"
+        >
+          🞕
+        </button>
       </form>
     </div>
   );

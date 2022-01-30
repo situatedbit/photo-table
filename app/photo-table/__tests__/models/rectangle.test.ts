@@ -6,10 +6,20 @@ describe('largestDimension', () => {
   });
 
   test('largest dimension is a width', () => {
-    expect(largestDimension([{ width: 10, height: 5 }, { width: 20, height: 7}])).toBe(20);
+    const rectangles = [
+      { x1: 0, x2: 20, y1: 0, y2: 5 },
+      { x1: 0, x2: 10, y1: 0, y2: 2.5 },
+    ];
+
+    expect(largestDimension(rectangles)).toBe(20);
   });
 
   test('largest dimension is a height', () => {
-    expect(largestDimension([{ width: 10, height: 20 }, { width: 10, height: 5 }])).toBe(20);
+    const rectangles = [
+      { x1: 0, x2: 5, y1: 0, y2: 20 },
+      { x1: 0, x2: 10, y1: 0, y2: 7 },
+    ];
+
+    expect(largestDimension(rectangles)).toBe(20);
   });
 });

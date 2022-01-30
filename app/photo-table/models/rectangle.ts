@@ -1,10 +1,18 @@
 export interface Rectangle {
-  x: number,
-  y: number,
-  height: number,
-  width: number,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
 }
 
-export function largestDimension(rectangles: { height: number, width: number }[]): number {
-  return rectangles.reduce((max, {height, width}) => Math.max(max, height, width), 0);
+export function height(r: Rectangle): number {
+  return Math.abs(r.y2 - r.y1);
+}
+
+export function width(r: Rectangle): number {
+  return Math.abs(r.x2 - r.x1);
+}
+
+export function largestDimension(rectangles: Rectangle[]): number {
+  return rectangles.reduce((max, r) => Math.max(max, height(r), width(r)), 0);
 }

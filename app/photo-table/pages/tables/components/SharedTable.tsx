@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import ImageContainer from './ImageContainer';
 import Toolbar from './Toolbar';
 import Viewport from './Viewport'
-import { largestDimension, Rectangle } from '../../../models/rectangle';
+import { height, largestSide, width, Rectangle } from '../../../models/rectangle';
 import { boundingBox, centerOnOrigin, centerOnRectangle } from '../../../models/surface';
 import { getSharedDoc } from '../../../models/client/sharedb';
 import styles from './SharedTable.module.css';
-import { fetchImage, Image } from '../../../models/image';
+import { fetchImage, plotImage, Image } from '../../../models/image';
 
 type Props = {
   tableId: string,
@@ -15,7 +15,7 @@ type Props = {
 const emptyTable = {
   images: [],
 };
-const initialViewport = { x: 0, y: 0, width: 0, height: 0 };
+const initialViewport = { x1: 0, y1: 0, x2: 0, y2: 0 };
 
 const SharedTable = ({ tableId }: Props) => {
   const [doc, setDoc] = useState(null)
@@ -61,9 +61,12 @@ const SharedTable = ({ tableId }: Props) => {
     const fetchedImage = await fetchImage(url);
     const width = fetchedImage.naturalWidth;
     const height = fetchedImage.naturalHeight;
-
+    const { x1: left, y1: top } = centerOnRectangle(width, height, viewport);
     const image: Image = {
-      ...centerOnRectangle(width, height, viewport),
+      left,
+      pixelHeight: height,
+      pixelWidth: width,
+      top,
       url,
       zIndex: 0,
     };
@@ -74,9 +77,7 @@ const SharedTable = ({ tableId }: Props) => {
   };
 
   const handleCenterOnOrigin = () => {
-    const { x, y } = centerOnOrigin(viewport.width, viewport.height);
-
-    setViewport({ ...viewport, x, y });
+    setViewport({ ...viewport, ...centerOnOrigin(width(viewport), height(viewport)) });
   }
 
   const handleImageRemove = (image, index: number) => {
@@ -87,7 +88,8 @@ const SharedTable = ({ tableId }: Props) => {
   };
 
   const handleImageMove = (image, index: number, axis: 'x' | 'y', increment: number) => {
-    const path = ['images', index, axis];
+    const prop = axis === 'x' ? 'left' : 'top';
+    const path = ['images', index, prop];
     const op = { p: path, na: increment };
 
     doc.submitOp(op);
@@ -115,7 +117,7 @@ const SharedTable = ({ tableId }: Props) => {
     // its new width and height.
     setViewport((previousViewport) => {
       if (previousViewport === initialViewport) {
-        return centerOnOrigin(viewport.width, viewport.height);
+        return centerOnOrigin(width(viewport), height(viewport));
       } else {
         return viewport;
       }
@@ -126,8 +128,8 @@ const SharedTable = ({ tableId }: Props) => {
   // of its quadrants. Furthermore, even in the case where the viewport
   // is the largest rectangle on the surface, the margin allows for any image
   // to be dragged to any viewport edge without bumping the edge of the surface.
-  const rectangles = [...table.images, viewport];
-  const surfaceMargin = largestDimension(rectangles);
+  const rectangles = [...table.images.map(plotImage), viewport];
+  const surfaceMargin = largestSide(rectangles);
   const surface = boundingBox(rectangles, surfaceMargin);
 
   return (

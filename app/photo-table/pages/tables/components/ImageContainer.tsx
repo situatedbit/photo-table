@@ -14,8 +14,8 @@ function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMove
   // component while the tree re-renders. During that time, these position
   // properties are applied to the inner container.
   const positionWithinSurface = {
-    left: surfaceWidth / 2 + image.x + midDragOffset.x,
-    top: surfaceHeight / 2 - image.y - midDragOffset.y,
+    left: surfaceWidth / 2 + image.left + midDragOffset.x,
+    top: surfaceHeight / 2 - image.top - midDragOffset.y,
   };
 
   const imageContainerStyle = {

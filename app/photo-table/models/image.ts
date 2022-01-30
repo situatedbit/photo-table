@@ -1,9 +1,24 @@
 import Rectangle from './rectangle';
 
-export interface Image extends Rectangle {
+export interface Image {
   id: string,
+  left: number,
+  pixelHeight: number,
+  pixelWidth: number,
+  top: number,
   url: string,
   zIndex: number,
+}
+
+export function plotImage(image: Image): Rectangle {
+  const { left, pixelHeight, pixelWidth, top } = image;
+
+  return {
+    x1: left,
+    x2: left + pixelWidth,
+    y1: top,
+    y2: top - pixelHeight,
+  };
 }
 
 export async function fetchImage(url: string): HTMLImageElement {

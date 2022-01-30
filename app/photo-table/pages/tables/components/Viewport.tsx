@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Rectangle } from '../../../models/rectangle';
+import { height, width, translate, Rectangle } from '../../../models/rectangle';
 import { Surface } from '../../../models/surface';
 import styles from './Viewport.module.css';
 
@@ -22,8 +22,8 @@ function Viewport({ viewport, surface, children, onViewportChange }: ViewportPro
   // both surface logical space and in CSS. Position the surface element
   // relative to the viewport element.
   const surfaceStyle = {
-    left: -(surface.width / 2 + viewport.x),
-    top: -(surface.height / 2 - viewport.y),
+    left: -(surface.width / 2 + viewport.x1),
+    top: -(surface.height / 2 - viewport.y1),
     width: surface.width,
     height: surface.height,
   };
@@ -31,11 +31,11 @@ function Viewport({ viewport, surface, children, onViewportChange }: ViewportPro
   // Synchronize the logical viewport size to the width and height of the
   // viewport <div> element. Does not change viewport logical position.
   const syncViewportToDomSize = (previousViewport: Rectangle, {clientWidth, clientHeight}) => {
-    if (previousViewport.width != clientWidth || previousViewport.height != clientHeight) {
+    if (width(previousViewport) != clientWidth || height(previousViewport) != clientHeight) {
       onViewportChange({
         ...previousViewport,
-        height: clientHeight,
-        width: clientWidth,
+        x2: previousViewport.x1 + clientWidth,
+        y2: previousViewport.y1 - clientHeight,
       });
     }
   };
@@ -71,11 +71,10 @@ function Viewport({ viewport, surface, children, onViewportChange }: ViewportPro
       // drag is finished, update the viewport with the coordinates of the
       // viewport before the drag action started, offset by the movement of the
       // mouse during the drag action.
-      onViewportChange({
-        ...viewport,
-        x: startDragViewport.x - (event.clientX - startDragPosition.x),
-        y: startDragViewport.y + (event.clientY - startDragPosition.y),
-      });
+      const translateX = -(event.clientX - startDragPosition.x);
+      const translateY = (event.clientY - startDragPosition.y);
+      
+      onViewportChange(translate(startDragViewport, translateX, translateY));
     }
   };
 

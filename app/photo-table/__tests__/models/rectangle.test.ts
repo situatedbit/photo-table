@@ -1,8 +1,8 @@
-import { largestDimension } from '../../models/rectangle';
+import { largestSide } from '../../models/rectangle';
 
-describe('largestDimension', () => {
+describe('largestSide', () => {
   test('empty array', () => {
-    expect(largestDimension([])).toBe(0);
+    expect(largestSide([])).toBe(0);
   });
 
   test('largest dimension is a width', () => {
@@ -11,7 +11,7 @@ describe('largestDimension', () => {
       { x1: 0, x2: 10, y1: 0, y2: 2.5 },
     ];
 
-    expect(largestDimension(rectangles)).toBe(20);
+    expect(largestSide(rectangles)).toBe(20);
   });
 
   test('largest dimension is a height', () => {
@@ -20,6 +20,6 @@ describe('largestDimension', () => {
       { x1: 0, x2: 10, y1: 0, y2: 7 },
     ];
 
-    expect(largestDimension(rectangles)).toBe(20);
+    expect(largestSide(rectangles)).toBe(20);
   });
 });

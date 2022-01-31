@@ -1,4 +1,4 @@
-import { center, centerOnPoint, largestSide } from '../../models/rectangle';
+import { center, centerOnPoint, largestSide } from '@/models/rectangle';
 
 describe('center', () => {
   describe('rectangle of no size', () => {

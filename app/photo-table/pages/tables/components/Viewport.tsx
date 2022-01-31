@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { height, width, translate, Rectangle } from '../../../models/rectangle';
-import { Surface } from '../../../models/surface';
+import { height, width, translate, Rectangle } from '@/models/rectangle';
+import { Surface } from '@/models/surface';
 import styles from './Viewport.module.css';
 
 interface ViewportProps {
@@ -73,7 +73,7 @@ function Viewport({ viewport, surface, children, onViewportChange }: ViewportPro
       // mouse during the drag action.
       const translateX = -(event.clientX - startDragPosition.x);
       const translateY = (event.clientY - startDragPosition.y);
-      
+
       onViewportChange(translate(startDragViewport, translateX, translateY));
     }
   };

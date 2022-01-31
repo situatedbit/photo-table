@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import ImageContainer from './ImageContainer';
 import Toolbar from './Toolbar';
 import Viewport from './Viewport'
-import { center, centerOnPoint, height, largestSide, width, Rectangle } from '../../../models/rectangle';
-import { boundingBox, centerOnOrigin, centerOnRectangle } from '../../../models/surface';
-import { getSharedDoc } from '../../../models/client/sharedb';
+import { center, centerOnPoint, height, largestSide, width, Rectangle } from '@/models/rectangle';
+import { boundingBox, centerOnOrigin, centerOnRectangle } from '@/models/surface';
+import { getSharedDoc } from '@/models/client/sharedb';
 import styles from './SharedTable.module.css';
-import { centerImageOnPoint, fetchImage, plotImage, imageFromElement, Image } from '../../../models/image';
+import { centerImageOnPoint, fetchImage, plotImage, imageFromElement, Image } from '@/models/image';
 
 type Props = {
   tableId: string,

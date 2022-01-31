@@ -1,4 +1,4 @@
-import Rectangle from './rectangle';
+import { centerOnPoint, Point, Rectangle } from './rectangle';
 
 export interface Image {
   id: string,
@@ -21,6 +21,12 @@ export function plotImage(image: Image): Rectangle {
   };
 }
 
+export function centerImageOnPoint(image: Image, point: Point): Image {
+  const { x1: left, y1: top } = centerOnPoint(plotImage(image), point);
+
+  return { ...image, left, top };
+}
+
 export async function fetchImage(url: string): HTMLImageElement {
   const response = await fetch(url);
   const blob = await response.blob();
@@ -35,4 +41,15 @@ export async function fetchImage(url: string): HTMLImageElement {
 
     image.addEventListener('load', handleImageLoad);
   });
+}
+
+export function imageFromElement(img: HTMLImageElement): Image {
+  return {
+    left: 0,
+    pixelHeight: img.naturalHeight,
+    pixelWidth: img.naturalWidth,
+    top: 0,
+    url: img.src,
+    zIndex: 0,
+  };
 }

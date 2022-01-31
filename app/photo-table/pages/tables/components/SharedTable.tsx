@@ -6,7 +6,7 @@ import { center, centerOnPoint, height, largestSide, width, Rectangle } from '..
 import { boundingBox, centerOnOrigin, centerOnRectangle } from '../../../models/surface';
 import { getSharedDoc } from '../../../models/client/sharedb';
 import styles from './SharedTable.module.css';
-import { fetchImage, plotImage, Image } from '../../../models/image';
+import { centerImageOnPoint, fetchImage, plotImage, imageFromElement, Image } from '../../../models/image';
 
 type Props = {
   tableId: string,
@@ -59,19 +59,9 @@ const SharedTable = ({ tableId }: Props) => {
   const handleAddUrl = async (url: string) => {
     const path = ['images', table.images.length];
 
-    const fetchedImage = await fetchImage(url);
-    const image: Image = {
-      left: 0,
-      pixelHeight: fetchedImage.naturalHeight,
-      pixelWidth: fetchedImage.naturalWidth,
-      top: 0,
-      url,
-      zIndex: 0,
-    };
+    const image = imageFromElement(await fetchImage(url));
 
-    const { x1: left, y1: top } = centerOnPoint(plotImage(image), center(viewport));
-    const centeredImage = { ...image, left, top };
-    const op = [{ p: path, li: centeredImage }];
+    const op = [{ p: path, li: centerImageOnPoint(image, center(viewport)) }];
 
     doc.submitOp(op);
   };

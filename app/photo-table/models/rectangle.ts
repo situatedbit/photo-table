@@ -5,7 +5,7 @@ export interface Rectangle {
   y2: number,
 }
 
-interface Point {
+export interface Point {
   x: number,
   y: number,
 }

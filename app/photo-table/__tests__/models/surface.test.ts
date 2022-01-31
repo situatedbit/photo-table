@@ -1,5 +1,5 @@
 import { height, width, Rectangle } from '../../models/rectangle';
-import { boundingBox, centerOnRectangle, Surface } from '../../models/surface';
+import { boundingBox, Surface } from '../../models/surface';
 
 describe('boundingBox', () => {
   test('any empty box has no width or height beyond margin', () => {
@@ -55,72 +55,5 @@ describe('boundingBox', () => {
       expect(box.width).toBe((20 + 10) * 2);
       expect(box.height).toBe((20 + 10) * 2);
     })
-  });
-});
-
-describe('centerOnRectangle', () => {
-  test('width is passed through', () => {
-    expect(width(centerOnRectangle(10, 20, { x1: 0, y1: 0, x2: 5, y2: -5 }))).toBe(10);
-  })
-
-  test('height is passed through', () => {
-    expect(height(centerOnRectangle(10, 20, { x1: 0, y1: 0, x2: 5, y2: -5 }))).toBe(20);
-  });
-
-  describe('when reference rectangle centered on origin', () => {
-    const rectangle = { x1: -5, y1: 5, x2: 5, y2: -5 };
-
-    test('should be centered on origin', () => {
-      const result = centerOnRectangle(20, 20, rectangle);
-
-      expect(result.x1).toBe(-10);
-      expect(result.y1).toBe(10);
-    });
-  });
-
-  describe('when reference rectangle is smaller than width and height', () => {
-    const rectangle = { x1: 0, y1: 0, x2: 20, y2: -20 };
-
-    test('should be centered in middle of rectangle', () => {
-      const result = centerOnRectangle(100, 200, rectangle);
-
-      expect(result.x1).toBe(-40);
-      expect(result.y1).toBe(90);
-    });
-  });
-
-  describe('when reference rectangle is larger than width and height', () => {
-    const rectangle = { x1: 0, y1: 0, x2: 20, y2: -20 };
-
-    test('should be centered in middle of rectangle', () => {
-      const result = centerOnRectangle(8, 8, rectangle);
-
-      expect(result.x1).toBe(6);
-      expect(result.y1).toBe(-6);
-    });
-  });
-
-  describe('when width and height are 0', () => {
-    const rectangle = { x1: 0, y1: 0, x2: 20, y2: -20 };
-
-    test('should include x and y at center of rectangle', () => {
-      const result = centerOnRectangle(0, 0, rectangle);
-
-      expect(result.x1).toBe(10);
-      expect(result.y2).toBe(-10);
-      expect(result.x2).toBe(10);
-      expect(result.y2).toBe(-10);
-    });
-  });
-
-  describe('when reference rectangle width and height are 0', () => {
-    const rectangle = { x1: 50, y1: 50, x2: 50, y2: 50 };
-
-    test('should be centered on reference rectangle x and y', () => {
-      const result = centerOnRectangle(100, 200, rectangle);
-
-      expect(result.x1).toBe(0);
-      expect(result.y1).toBe(150);
-    });
   });
 });

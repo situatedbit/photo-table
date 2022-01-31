@@ -1,11 +1,9 @@
-import { width, height, Rectangle } from './rectangle';
+import { Rectangle } from './rectangle';
 
 export interface Surface {
   height: number;
   width: number;
 }
-
-const origin = { x1: 0, y1: 0, x2: 0, y2: 0 };
 
 /*
   Given a collection of rectangles on a logical cartesian plane, will produce a
@@ -22,26 +20,4 @@ export function boundingBox(rectangles: Rectangle[], margin: number): Surface {
   const height = 2 * (maxScale(yCoords) + margin);
 
   return { height, width };
-}
-
-export function centerOnOrigin(width: number, height: number): Rectangle {
-  return centerOnRectangle(width, height, origin);
-}
-
-function centerOfRectangle(rectangle: Rectangle): { x: number, y: number } {
-  return {
-    x: rectangle.x1 - (rectangle.x1 - rectangle.x2) / 2,
-    y: rectangle.y1 - (rectangle.y1 - rectangle.y2) / 2,
-  };
-}
-
-export function centerOnRectangle(width: number, height: number, rectangle: Rectangle): Rectangle {
-  const center = centerOfRectangle(rectangle);
-
-  return {
-    x1: center.x - width / 2,
-    y1: center.y + height / 2,
-    x2: center.x + width / 2,
-    y2: center.y - height / 2,
-  };
 }

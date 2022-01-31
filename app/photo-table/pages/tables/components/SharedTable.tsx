@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import ImageContainer from './ImageContainer';
 import Toolbar from './Toolbar';
 import Viewport from './Viewport'
-import { height, largestSide, width, Rectangle } from '../../../models/rectangle';
+import { center, centerOnPoint, height, largestSide, width, Rectangle } from '../../../models/rectangle';
 import { boundingBox, centerOnOrigin, centerOnRectangle } from '../../../models/surface';
 import { getSharedDoc } from '../../../models/client/sharedb';
 import styles from './SharedTable.module.css';
@@ -16,6 +16,7 @@ const emptyTable = {
   images: [],
 };
 const initialViewport = { x1: 0, y1: 0, x2: 0, y2: 0 };
+const origin = { x: 0, y: 0 };
 
 const SharedTable = ({ tableId }: Props) => {
   const [doc, setDoc] = useState(null)
@@ -59,25 +60,24 @@ const SharedTable = ({ tableId }: Props) => {
     const path = ['images', table.images.length];
 
     const fetchedImage = await fetchImage(url);
-    const width = fetchedImage.naturalWidth;
-    const height = fetchedImage.naturalHeight;
-    const { x1: left, y1: top } = centerOnRectangle(width, height, viewport);
     const image: Image = {
-      left,
-      pixelHeight: height,
-      pixelWidth: width,
-      top,
+      left: 0,
+      pixelHeight: fetchedImage.naturalHeight,
+      pixelWidth: fetchedImage.naturalWidth,
+      top: 0,
       url,
       zIndex: 0,
     };
 
-    const op = [{ p: path, li: image }];
+    const { x1: left, y1: top } = centerOnPoint(plotImage(image), center(viewport));
+    const centeredImage = { ...image, left, top };
+    const op = [{ p: path, li: centeredImage }];
 
     doc.submitOp(op);
   };
 
   const handleCenterOnOrigin = () => {
-    setViewport({ ...viewport, ...centerOnOrigin(width(viewport), height(viewport)) });
+    setViewport(centerOnPoint(viewport, origin));
   }
 
   const handleImageRemove = (image, index: number) => {
@@ -117,7 +117,7 @@ const SharedTable = ({ tableId }: Props) => {
     // its new width and height.
     setViewport((previousViewport) => {
       if (previousViewport === initialViewport) {
-        return centerOnOrigin(width(viewport), height(viewport));
+        return centerOnPoint(viewport, origin);
       } else {
         return viewport;
       }

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { height, width, translate, Rectangle } from '@/models/rectangle';
 import { Surface } from '@/models/surface';
 import styles from './Viewport.module.css';
@@ -11,7 +11,6 @@ interface ViewportProps {
 }
 
 function Viewport({ viewport, surface, children, onViewportChange }: ViewportProps) {
-  const viewportDiv = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startDragViewport, setStartDragViewport] = useState(null);
   const [startDragPosition, setStartDragPosition] = useState(null);
@@ -27,34 +26,6 @@ function Viewport({ viewport, surface, children, onViewportChange }: ViewportPro
     width: surface.width,
     height: surface.height,
   };
-
-  // Synchronize the logical viewport size to the width and height of the
-  // viewport <div> element. Does not change viewport logical position.
-  const syncViewportToDomSize = (previousViewport: Rectangle, {clientWidth, clientHeight}) => {
-    if (width(previousViewport) != clientWidth || height(previousViewport) != clientHeight) {
-      onViewportChange({
-        ...previousViewport,
-        x2: previousViewport.x1 + clientWidth,
-        y2: previousViewport.y1 - clientHeight,
-      });
-    }
-  };
-
-  // On initial render, make sure to measure the DOM to set an initial viewport
-  // width and height
-  useEffect(() => {
-    const id = setTimeout(syncViewportToDomSize(viewport, viewportDiv.current), 0);
-
-    return () => clearTimeout(id);
-  }, []);
-
-  useEffect(() => {
-    const handleWindowResize = () => syncViewportToDomSize(viewport, viewportDiv.current);
-
-    window.addEventListener('resize', handleWindowResize);
-
-    return () => window.removeEventListener('resize', handleWindowResize);
-});
 
   const handleMouseDown = (event: Event) => {
     // button 0 is the primary button; ignore right clicks, e.g.
@@ -89,7 +60,7 @@ function Viewport({ viewport, surface, children, onViewportChange }: ViewportPro
   const viewportClassName = isDragging ? styles.viewportDragging : styles.viewport;
 
   return (
-    <div className={viewportClassName} ref={viewportDiv}>
+    <div className={viewportClassName}>
       <div
         className={styles.surface}
         style={{ ...surfaceStyle }}

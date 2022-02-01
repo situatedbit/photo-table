@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ImageContainer from './ImageContainer';
 import Toolbar from './Toolbar';
 import Viewport from './Viewport'
@@ -19,7 +19,8 @@ const initialViewport = { x1: 0, y1: 0, x2: 0, y2: 0 };
 const origin = { x: 0, y: 0 };
 
 const SharedTable = ({ tableId }: Props) => {
-  const [doc, setDoc] = useState(null)
+  const viewportDiv = useRef(null);
+  const [doc, setDoc] = useState(null);
   const [table, setTable] = useState(emptyTable);
   // Viewport size will be based on DOM element size. Initialize it to a tiny
   // size, then wait for the Viewport component to synchronize the logical
@@ -55,6 +56,55 @@ const SharedTable = ({ tableId }: Props) => {
       newDoc.off('op', handleOp);
     };
   }, [tableId]);
+
+  const resizeViewport = (originalViewport: Rectangle, { width: number, height: number }): Rectangle => {
+    return {
+      ...originalViewport,
+      x1: 0,
+      y1: 0,
+      x2: width,
+      y2: -height,
+    };
+  }
+
+  // On every render make sure the viewport width and height match the containing div.
+  useEffect(() => {
+    const id = setTimeout(() => {
+      const sizedViewport = resizeViewport(
+        viewport,
+        viewportDiv.current.clientWidth,
+        viewportDiv.current.clientHeight,
+      );
+
+      // Avoid constantly re-rendering by only calling setViewport if size has changed
+      if(width(sizedViewport) != width(viewport) || height(sizedViewport) != height(viewport)) {
+        // Side effect: during the initial render, when viewport is set to the
+        // origin, this will ensure that the first rightly sized viewport is
+        // also centered on the origin.
+        setViewport(centerOnPoint(sizedViewport, center(viewport)));
+      }
+    }, 0);
+
+    return () => clearTimeout(id);
+  });
+
+  // When the window size changes, make sure viewport retains width and height
+  // of containing div
+  useEffect(() => {
+    const handleWindowResize = () => {
+      const sizedViewport = resizeViewport(
+        viewport,
+        viewportDiv.current.clientWidth,
+        viewportDiv.current.clientHeight,
+      );
+
+      setViewport(centerOnPoint(sizedViewport, center(viewport)));
+    };
+
+    window.addEventListener('resize', handleWindowResize);
+
+    return () => window.removeEventListener('resize', handleWindowResize);
+  });
 
   const handleAddUrl = async (url: string) => {
     const path = ['images', table.images.length];
@@ -102,18 +152,6 @@ const SharedTable = ({ tableId }: Props) => {
     doc.submitOp(op);
   }
 
-  const handleViewportChange = (viewport: Rectangle) => {
-    // If this is the first update to viewport, center it on the origin with
-    // its new width and height.
-    setViewport((previousViewport) => {
-      if (previousViewport === initialViewport) {
-        return centerOnPoint(viewport, origin);
-      } else {
-        return viewport;
-      }
-    });
-  };
-
   // Surface is large enough to contain any image or the viewport in any
   // of its quadrants. Furthermore, even in the case where the viewport
   // is the largest rectangle on the surface, the margin allows for any image
@@ -130,11 +168,11 @@ const SharedTable = ({ tableId }: Props) => {
           onCenterOnOrigin={handleCenterOnOrigin}
         />
       </div>
-      <div className={styles.viewport}>
+      <div className={styles.viewport} ref={viewportDiv}>
         <Viewport
           surface={surface}
           viewport={viewport}
-          onViewportChange={handleViewportChange}
+          onViewportChange={(v) => setViewport(v)}
         >
           { table.images.map((image, index) => {
             return(

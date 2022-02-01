@@ -1,3 +1,4 @@
+/* eslint @next/next/no-img-element: 0 */
 import { useState } from 'react';
 import styles from './ImageContainer.module.css';
 
@@ -84,6 +85,7 @@ function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMove
         style={imageContainerStyle}
       >
         <img
+          alt=""
           className={imgClassName}
           draggable="false"
           height={image.height}

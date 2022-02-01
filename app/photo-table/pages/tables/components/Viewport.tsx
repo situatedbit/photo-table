@@ -54,7 +54,7 @@ function Viewport({ viewport, surface, children, onViewportChange }: ViewportPro
     window.addEventListener('resize', handleWindowResize);
 
     return () => window.removeEventListener('resize', handleWindowResize);
-  })
+});
 
   const handleMouseDown = (event: Event) => {
     // button 0 is the primary button; ignore right clicks, e.g.

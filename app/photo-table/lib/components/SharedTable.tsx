@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import ImageContainer from './ImageContainer';
 import Toolbar from './Toolbar';
 import Viewport from './Viewport'
-import { useSharedTable, appendImageOp } from '@/models/doc';
+import { useSharedTable, appendImageOp, moveImageOp, removeImageOp, setImageZIndexOp } from '@/models/doc';
 import { center, centerOnPoint, height, largestSide, width, Rectangle } from '@/models/rectangle';
 import { boundingBox } from '@/models/surface';
 import { centerImageOnPoint, fetchImage, plotImage, imageFromElement, Image } from '@/models/image';
@@ -83,36 +83,23 @@ const SharedTable = ({ tableId }: Props) => {
   }
 
   const handleImageRemove = (image: Image, index: number) => {
-    const path = ['images', index];
-    const op = [{ p: path, ld: image }];
-
-
-    doc.submitOp(op);
+    doc.submitOp(removeImageOp(image, index));
   };
 
   const handleImageMove = (index: number, axis: 'x' | 'y', increment: number) => {
     const prop = axis === 'x' ? 'left' : 'top';
-    const path = ['images', index, prop];
-    const op = { p: path, na: increment };
 
-    doc.submitOp(op);
+    doc.submitOp(moveImageOp(index, prop, increment));
   }
 
   const handleImageMoveToTop = (image: Image, index: number) => {
     const maxZ = Math.max(...table.images.map(image => image.zIndex));
-    const increment = maxZ + 1 - image.zIndex;
-    const path = ['images', index, 'zIndex'];
-    const op = { p: path, na: increment };
 
-    doc.submitOp(op);
+    doc.submitOp(setImageZIndexOp(index, image.zIndex, maxZ + 1));
   }
 
   const handleImageMoveToBottom = (image: Image, index: number) => {
-    const increment = 0 - image.zIndex;
-    const path = ['images', index, 'zIndex'];
-    const op = { p: path, na: increment };
-
-    doc.submitOp(op);
+    doc.submitOp(setImageZIndexOp(index, image.zIndex, 0));
   }
 
   // Surface is large enough to contain any image or the viewport in any

@@ -1,8 +1,11 @@
 import { useEffect, useState, useMemo } from 'react';
 import { getSharedDoc, Doc, Error as ShareDBError } from '@/models/client/sharedb';
-import { ListInsertOp } from 'sharedb';
-import { Table } from '@/models/table';
+import { AddNumOp, ListDeleteOp, ListInsertOp } from 'sharedb';
 import { Image } from '@/models/image';
+
+export interface Table {
+  images: Image[];
+}
 
 const emptyTable: Table = {
   images: [] as Image[],
@@ -41,6 +44,18 @@ export function useSharedTable(tableId: string): [Doc<Table>, Table] {
   return [doc, table];
 }
 
-export function appendImageOp(images: Image[], image: Image): [ListInsertOp] {
-  return [{ p: ['images', images.length], li: image }];
+export function appendImageOp(images: Image[], image: Image): ListInsertOp {
+  return { p: ['images', images.length], li: image };
+}
+
+export function removeImageOp(image: Image, index: number): ListDeleteOp {
+  return { p: ['images', index], ld: image };
+}
+
+export function moveImageOp(imageIndex: number, prop: 'left' | 'top', increment: number): AddNumOp {
+  return { p: ['images', imageIndex, prop], na: increment };
+}
+
+export function setImageZIndexOp(imageIndex: number, currentZIndex: number, targetZIndex: number): AddNumOp {
+  return { p: ['images', imageIndex, 'zIndex'], na: targetZIndex - currentZIndex };
 }

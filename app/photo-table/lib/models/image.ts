@@ -1,13 +1,13 @@
-import { centerOnPoint, Point, Rectangle } from './rectangle';
+import { centerOnPoint, Point, Rectangle } from "./rectangle";
 
 export interface Image {
-  id: string,
-  left: number,
-  pixelHeight: number,
-  pixelWidth: number,
-  top: number,
-  url: string,
-  zIndex: number,
+  id: string;
+  left: number;
+  pixelHeight: number;
+  pixelWidth: number;
+  top: number;
+  url: string;
+  zIndex: number;
 }
 
 export function plotImage(image: Image): Rectangle {
@@ -35,17 +35,17 @@ export async function fetchImage(url: string): Promise<HTMLImageElement> {
 
   return new Promise((resolve) => {
     const handleImageLoad = () => {
-      image.removeEventListener('load', handleImageLoad);
+      image.removeEventListener("load", handleImageLoad);
       resolve(image);
     };
 
-    image.addEventListener('load', handleImageLoad);
+    image.addEventListener("load", handleImageLoad);
   });
 }
 
 export function imageFromElement(img: HTMLImageElement): Image {
   return {
-    id: '',
+    id: "",
     left: 0,
     pixelHeight: img.naturalHeight,
     pixelWidth: img.naturalWidth,

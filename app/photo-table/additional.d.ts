@@ -1,1 +1,1 @@
-declare module 'ot-json0';
+declare module "ot-json0";

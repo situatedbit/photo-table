@@ -1,13 +1,13 @@
 export interface Rectangle {
-  x1: number,
-  y1: number,
-  x2: number,
-  y2: number,
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
 }
 
 export interface Point {
-  x: number,
-  y: number,
+  x: number;
+  y: number;
 }
 
 export function center(r: Rectangle): Point {
@@ -29,7 +29,11 @@ export function largestSide(rectangles: Rectangle[]): number {
   return rectangles.reduce((max, r) => Math.max(max, height(r), width(r)), 0);
 }
 
-export function translate(rectangle: Rectangle, x: number, y: number): Rectangle {
+export function translate(
+  rectangle: Rectangle,
+  x: number,
+  y: number
+): Rectangle {
   return {
     x1: rectangle.x1 + x,
     y1: rectangle.y1 + y,
@@ -38,7 +42,7 @@ export function translate(rectangle: Rectangle, x: number, y: number): Rectangle
   };
 }
 
-export function centerOnPoint(r: Rectangle, { x, y } : Point): Rectangle {
+export function centerOnPoint(r: Rectangle, { x, y }: Point): Rectangle {
   const { x: centerX, y: centerY } = center(r);
   const translateX = x - centerX;
   const translateY = y - centerY;

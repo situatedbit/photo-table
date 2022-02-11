@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import ImageContainer from './ImageContainer';
 import Toolbar from './Toolbar';
 import Viewport from './Viewport'
-import { useSharedTable } from '@/models/doc';
+import { useSharedTable, appendImageOp } from '@/models/doc';
 import { center, centerOnPoint, height, largestSide, width, Rectangle } from '@/models/rectangle';
 import { boundingBox } from '@/models/surface';
 import { centerImageOnPoint, fetchImage, plotImage, imageFromElement, Image } from '@/models/image';
@@ -72,13 +72,10 @@ const SharedTable = ({ tableId }: Props) => {
   });
 
   const handleAddUrl = async (url: string) => {
-    const path = ['images', table.images.length];
-
     const image = imageFromElement(await fetchImage(url));
+    const centeredImage = centerImageOnPoint(image, center(viewport));
 
-    const op = [{ p: path, li: centerImageOnPoint(image, center(viewport)) }];
-
-    doc!.submitOp(op);
+    doc.submitOp(appendImageOp(table.images, centeredImage));
   };
 
   const handleCenterOnOrigin = () => {
@@ -89,7 +86,8 @@ const SharedTable = ({ tableId }: Props) => {
     const path = ['images', index];
     const op = [{ p: path, ld: image }];
 
-    doc!.submitOp(op);
+
+    doc.submitOp(op);
   };
 
   const handleImageMove = (index: number, axis: 'x' | 'y', increment: number) => {
@@ -97,7 +95,7 @@ const SharedTable = ({ tableId }: Props) => {
     const path = ['images', index, prop];
     const op = { p: path, na: increment };
 
-    doc!.submitOp(op);
+    doc.submitOp(op);
   }
 
   const handleImageMoveToTop = (image: Image, index: number) => {
@@ -106,7 +104,7 @@ const SharedTable = ({ tableId }: Props) => {
     const path = ['images', index, 'zIndex'];
     const op = { p: path, na: increment };
 
-    doc!.submitOp(op);
+    doc.submitOp(op);
   }
 
   const handleImageMoveToBottom = (image: Image, index: number) => {
@@ -114,7 +112,7 @@ const SharedTable = ({ tableId }: Props) => {
     const path = ['images', index, 'zIndex'];
     const op = { p: path, na: increment };
 
-    doc!.submitOp(op);
+    doc.submitOp(op);
   }
 
   // Surface is large enough to contain any image or the viewport in any

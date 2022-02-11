@@ -1,12 +1,14 @@
 var http = require('http');
 var express = require('express');
 var ShareDB = require('sharedb');
+var ShareDBMingo = require('sharedb-mingo-memory');
 var WebSocket = require('ws');
 var WebSocketJSONStream = require('@teamwork/websocket-json-stream');
 var json0 = require('ot-json0');
 
 ShareDB.types.register(json0.type);
-var backend = new ShareDB();
+var backend = new ShareDB({ db: new ShareDBMingo() });
+
 startServer();
 
 function startServer() {

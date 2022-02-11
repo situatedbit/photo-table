@@ -5,7 +5,7 @@ import json0 from 'ot-json0';
 
 const documentCollection = 'tables';
 
-function createOrGetDoc(id: string): Promise {
+function createOrGetDoc(id: string): Promise<string> {
   const socket = new WebSocket('ws://localhost:8080');
   const connection = new Connection(socket);
   const doc = connection.get(documentCollection, id);
@@ -16,7 +16,6 @@ function createOrGetDoc(id: string): Promise {
         if (err) {
            throw err;
         } else if (doc.type === null) {
-          debugger;
           doc.create({ images: [] }, json0.type.uri, (error) => {
             if(error) {
               reject(error)
@@ -25,10 +24,11 @@ function createOrGetDoc(id: string): Promise {
             resolve(id);
           });
         } else {
-          resolve();
+          resolve(id);
         }
       }
       catch(error) {
+// DEBUG
         console.log('rejected', error)
         reject(error);
       }
@@ -65,6 +65,6 @@ export default async function handler(
 
     default:
       res.setHeader('Allow', ['POST']);
-      res.status(405).end(`Method ${method} Not Allowed`);
+      res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

@@ -3,8 +3,8 @@ import ImageContainer from './ImageContainer';
 import Toolbar from './Toolbar';
 import Viewport from './Viewport'
 import { center, centerOnPoint, height, largestSide, width, Rectangle } from '@/models/rectangle';
-import { boundingBox, centerOnOrigin, centerOnRectangle } from '@/models/surface';
-import { getSharedDoc } from '@/models/client/sharedb';
+import { boundingBox } from '@/models/surface';
+import { getSharedDoc, Doc } from '@/models/client/sharedb';
 import styles from './SharedTable.module.css';
 import { centerImageOnPoint, fetchImage, plotImage, imageFromElement, Image } from '@/models/image';
 
@@ -12,15 +12,19 @@ type Props = {
   tableId: string,
 }
 
-const emptyTable = {
+interface Table {
+  images: Image[];
+}
+
+const emptyTable: Table = {
   images: [],
 };
 const initialViewport = { x1: 0, y1: 0, x2: 0, y2: 0 };
 const origin = { x: 0, y: 0 };
 
 const SharedTable = ({ tableId }: Props) => {
-  const viewportDiv = useRef(null);
-  const [doc, setDoc] = useState(null);
+  const viewportDiv = useRef<HTMLDivElement>(null);
+  const [doc, setDoc] = useState<Doc<any> | null>(null);
   const [table, setTable] = useState(emptyTable);
   // Viewport size will be based on DOM element size. Initialize it to a tiny
   // size, then wait for the Viewport component to synchronize the logical
@@ -57,7 +61,7 @@ const SharedTable = ({ tableId }: Props) => {
     };
   }, [tableId]);
 
-  const resizeViewport = (originalViewport: Rectangle, { width: number, height: number }): Rectangle => {
+  const resizeViewport = (originalViewport: Rectangle, width: number, height: number): Rectangle => {
     return {
       ...originalViewport,
       x1: 0,
@@ -69,12 +73,11 @@ const SharedTable = ({ tableId }: Props) => {
 
   // On every render make sure the viewport width and height match the containing div.
   useEffect(() => {
+    const viewportWidth = viewportDiv?.current?.clientWidth ?? 0;
+    const viewportHeight = viewportDiv?.current?.clientHeight ?? 0;
+
     const id = setTimeout(() => {
-      const sizedViewport = resizeViewport(
-        viewport,
-        viewportDiv.current.clientWidth,
-        viewportDiv.current.clientHeight,
-      );
+      const sizedViewport = resizeViewport(viewport, viewportWidth, viewportHeight);
 
       // Avoid constantly re-rendering by only calling setViewport if size has changed
       if(width(sizedViewport) != width(viewport) || height(sizedViewport) != height(viewport)) {
@@ -91,12 +94,11 @@ const SharedTable = ({ tableId }: Props) => {
   // When the window size changes, make sure viewport retains width and height
   // of containing div
   useEffect(() => {
+    const viewportWidth = viewportDiv?.current?.clientWidth ?? 0;
+    const viewportHeight = viewportDiv?.current?.clientHeight ?? 0;
+
     const handleWindowResize = () => {
-      const sizedViewport = resizeViewport(
-        viewport,
-        viewportDiv.current.clientWidth,
-        viewportDiv.current.clientHeight,
-      );
+      const sizedViewport = resizeViewport(viewport, viewportWidth, viewportHeight);
 
       setViewport(centerOnPoint(sizedViewport, center(viewport)));
     };
@@ -113,43 +115,43 @@ const SharedTable = ({ tableId }: Props) => {
 
     const op = [{ p: path, li: centerImageOnPoint(image, center(viewport)) }];
 
-    doc.submitOp(op);
+    doc!.submitOp(op);
   };
 
   const handleCenterOnOrigin = () => {
     setViewport(centerOnPoint(viewport, origin));
   }
 
-  const handleImageRemove = (image, index: number) => {
+  const handleImageRemove = (image: Image, index: number) => {
     const path = ['images', index];
     const op = [{ p: path, ld: image }];
 
-    doc.submitOp(op);
+    doc!.submitOp(op);
   };
 
-  const handleImageMove = (image, index: number, axis: 'x' | 'y', increment: number) => {
+  const handleImageMove = (image: Image, index: number, axis: 'x' | 'y', increment: number) => {
     const prop = axis === 'x' ? 'left' : 'top';
     const path = ['images', index, prop];
     const op = { p: path, na: increment };
 
-    doc.submitOp(op);
+    doc!.submitOp(op);
   }
 
-  const handleImageMoveToTop = (image, index: number) => {
+  const handleImageMoveToTop = (image: Image, index: number) => {
     const maxZ = Math.max(...table.images.map(image => image.zIndex));
     const increment = maxZ + 1 - image.zIndex;
     const path = ['images', index, 'zIndex'];
     const op = { p: path, na: increment };
 
-    doc.submitOp(op);
+    doc!.submitOp(op);
   }
 
-  const handleImageMoveToBottom = (image, index: number) => {
+  const handleImageMoveToBottom = (image: Image, index: number) => {
     const increment = 0 - image.zIndex;
     const path = ['images', index, 'zIndex'];
     const op = { p: path, na: increment };
 
-    doc.submitOp(op);
+    doc!.submitOp(op);
   }
 
   // Surface is large enough to contain any image or the viewport in any

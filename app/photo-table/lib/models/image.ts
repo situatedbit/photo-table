@@ -27,7 +27,7 @@ export function centerImageOnPoint(image: Image, point: Point): Image {
   return { ...image, left, top };
 }
 
-export async function fetchImage(url: string): HTMLImageElement {
+export async function fetchImage(url: string): Promise<HTMLImageElement> {
   const response = await fetch(url);
   const blob = await response.blob();
   const image = new Image();
@@ -45,6 +45,7 @@ export async function fetchImage(url: string): HTMLImageElement {
 
 export function imageFromElement(img: HTMLImageElement): Image {
   return {
+    id: '',
     left: 0,
     pixelHeight: img.naturalHeight,
     pixelWidth: img.naturalWidth,

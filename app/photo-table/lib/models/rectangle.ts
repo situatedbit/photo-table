@@ -29,7 +29,7 @@ export function largestSide(rectangles: Rectangle[]): number {
   return rectangles.reduce((max, r) => Math.max(max, height(r), width(r)), 0);
 }
 
-export function translate(rectangle: Rectangle, x, y): Rectangle {
+export function translate(rectangle: Rectangle, x: number, y: number): Rectangle {
   return {
     x1: rectangle.x1 + x,
     y1: rectangle.y1 + y,

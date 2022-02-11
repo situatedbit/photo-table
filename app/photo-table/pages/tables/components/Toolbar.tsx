@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, ChangeEvent, FormEventHandler } from 'react';
 
 type Props = {
   onAddUrl: (url: string) => void,
@@ -8,7 +8,7 @@ type Props = {
 function Toolbar({ onAddUrl, onCenterOnOrigin }: Props) {
   const [urlValue, setUrlValue] = useState('');
 
-  const handleSubmit = (event: Event) => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     onAddUrl(urlValue);
 
@@ -26,7 +26,8 @@ function Toolbar({ onAddUrl, onCenterOnOrigin }: Props) {
           type="url"
           placeholder="Image URL"
           value={urlValue}
-          onChange={(event: Event) => setUrlValue(event.target.value)}
+
+          onChange={(event: ChangeEvent<HTMLInputElement>) => setUrlValue(event.target.value)}
         />
         <input
           className="bg-slate-200 border-2 p-1"

@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useState, FormEventHandler } from 'react';
 import styles from '../styles/Home.module.css'
 
 type TablesResponseParams = {
@@ -12,7 +12,7 @@ const Home: NextPage = () => {
   const router = useRouter();
   const [tableName, setTableName] = useState('');
 
-  const handleSubmit = async (event: Event) => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
 
     const headers = { 'Content-Type': 'application/json' };

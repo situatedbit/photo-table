@@ -1,8 +1,31 @@
 /* eslint @next/next/no-img-element: 0 */
-import { useState } from 'react';
+import { useState, MouseEvent, FormEvent } from 'react';
+import { Image } from '@/models/image';
 import styles from './ImageContainer.module.css';
 
-function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMoveToBottom, surfaceWidth, surfaceHeight }) {
+interface ImageContainerProps {
+  image: Image;
+  onRemove: () => void;
+// TODO: remove image from signature
+  onMoveX: (image: Image, increment: number) => void;
+  onMoveY: (image: Image, increment: number) => void;
+  onMoveToTop: () => void;
+  onMoveToBottom: () => void;
+  surfaceWidth: number;
+  surfaceHeight: number;
+}
+
+function ImageContainer({
+    image,
+    onRemove,
+    onMoveX,
+    onMoveY,
+    onMoveToTop,
+    onMoveToBottom,
+    surfaceWidth,
+    surfaceHeight,
+  }: ImageContainerProps
+) {
   const [isDragging, setIsDragging] = useState(false);
   // Drag offset values operate in surface logical space, not as CSS coordinates
   const [startDragOffset, setStartDragOffset] = useState({ x : 0, y: 0 });
@@ -28,10 +51,10 @@ function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMove
     ...(isDragging ? {} : positionWithinSurface),
   };
 
-  const handleMouseDown = (event: Event) => {
+  const handleMouseDown = (event: MouseEvent<HTMLElement>) => {
     // button 0 is the primary button; ignore right clicks, e.g.
     if(event.button === 0) {
-      onMoveToTop(image);
+      onMoveToTop();
 
       setStartDragOffset({ x: event.clientX, y: event.clientY });
       setIsDragging(true);
@@ -41,7 +64,7 @@ function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMove
     event.stopPropagation();
   };
 
-  const handleMouseMove = (event: Event) => {
+  const handleMouseMove = (event: MouseEvent<HTMLElement>) => {
     if(!isDragging) {
       // Just ignore, don't prevent event bubble
       return;
@@ -53,7 +76,7 @@ function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMove
     setMidDragOffset({ x, y });
   };
 
-  const handleMouseUp = (event: Event) => {
+  const handleMouseUp = (event: MouseEvent<HTMLElement>) => {
     if(isDragging && event.button === 0) {
       setStartDragOffset({ x: 0, y: 0 });
       setMidDragOffset({ x: 0, y: 0 });
@@ -88,21 +111,21 @@ function ImageContainer({ image, onRemove, onMoveX, onMoveY, onMoveToTop, onMove
           alt=""
           className={imgClassName}
           draggable="false"
-          height={image.height}
+          height={image.pixelHeight}
           src={image.url}
-          width={image.width}
+          width={image.pixelWidth}
         />
         <form
           className={styles.controls}
-          onSubmit={(event: Event) => event.preventDefault()}
+          onSubmit={(event: FormEvent<HTMLFormElement>) => event.preventDefault()}
         >
           <button
             className="p-1"
-            onClick={() => onMoveToBottom(image)}
+            onClick={onMoveToBottom}
           >⤓</button>
           <button
             className="p-1"
-            onClick={() => onRemove(image)}
+            onClick={onRemove}
           >✕</button>
         </form>
       </div>

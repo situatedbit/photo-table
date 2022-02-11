@@ -6,9 +6,8 @@ import styles from './ImageContainer.module.css';
 interface ImageContainerProps {
   image: Image;
   onRemove: () => void;
-// TODO: remove image from signature
-  onMoveX: (image: Image, increment: number) => void;
-  onMoveY: (image: Image, increment: number) => void;
+  onMoveX: (increment: number) => void;
+  onMoveY: (increment: number) => void;
   onMoveToTop: () => void;
   onMoveToBottom: () => void;
   surfaceWidth: number;
@@ -83,11 +82,11 @@ function ImageContainer({
       setIsDragging(false);
 
       if(midDragOffset.x != 0) {
-        onMoveX(image, midDragOffset.x);
+        onMoveX(midDragOffset.x);
       }
 
       if(midDragOffset.y != 0) {
-        onMoveY(image, midDragOffset.y);
+        onMoveY(midDragOffset.y);
       }
     }
   };

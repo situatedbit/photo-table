@@ -1,5 +1,4 @@
 import ReconnectingWebSocket from 'reconnecting-websocket';
-import * as ShareDB from 'sharedb';
 import { Connection, Doc } from 'sharedb/lib/client';
 
 // Socket from https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/sharedb/lib/sharedb.d.ts
@@ -31,3 +30,4 @@ export function getSharedDoc(collection: string, id: string): Doc<any> {
 };
 
 export type { Doc } from 'sharedb/lib/client';
+export type { Error } from 'sharedb';

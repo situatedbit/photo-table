@@ -2,64 +2,27 @@ import { useEffect, useRef, useState } from 'react';
 import ImageContainer from './ImageContainer';
 import Toolbar from './Toolbar';
 import Viewport from './Viewport'
+import { useSharedTable } from '@/models/doc';
 import { center, centerOnPoint, height, largestSide, width, Rectangle } from '@/models/rectangle';
 import { boundingBox } from '@/models/surface';
-import { getSharedDoc, Doc } from '@/models/client/sharedb';
-import styles from './SharedTable.module.css';
 import { centerImageOnPoint, fetchImage, plotImage, imageFromElement, Image } from '@/models/image';
+import styles from './SharedTable.module.css';
 
 type Props = {
   tableId: string,
 }
 
-interface Table {
-  images: Image[];
-}
-
-const emptyTable: Table = {
-  images: [],
-};
 const initialViewport = { x1: 0, y1: 0, x2: 0, y2: 0 };
 const origin = { x: 0, y: 0 };
 
 const SharedTable = ({ tableId }: Props) => {
   const viewportDiv = useRef<HTMLDivElement>(null);
-  const [doc, setDoc] = useState<Doc<any> | null>(null);
-  const [table, setTable] = useState(emptyTable);
+  const [doc, table] = useSharedTable(tableId);
+
   // Viewport size will be based on DOM element size. Initialize it to a tiny
   // size, then wait for the Viewport component to synchronize the logical
   // viewport size with the containing dom element.
   const [viewport, setViewport] = useState(initialViewport);
-
-  useEffect(() => {
-    const newDoc = getSharedDoc('tables', tableId);
-
-    newDoc.subscribe((error) => {
-      if (error) return console.error(error);
-    });
-
-    const handleLoad = () => {
-      setTable({ ...newDoc.data });
-// DEBUG
-      console.log('loaded', { ...newDoc.data });
-    };
-    newDoc.on('load', handleLoad);
-
-    const handleOp = () => {
-      setTable({ ...newDoc.data });
-// DEBUG
-      console.log('op', { ...newDoc.data });
-    };
-    newDoc.on('op', handleOp);
-
-    setDoc(newDoc)
-
-    return () => {
-      newDoc.unsubscribe();
-      newDoc.off('load', handleLoad);
-      newDoc.off('op', handleOp);
-    };
-  }, [tableId]);
 
   const resizeViewport = (originalViewport: Rectangle, width: number, height: number): Rectangle => {
     return {
@@ -129,7 +92,7 @@ const SharedTable = ({ tableId }: Props) => {
     doc!.submitOp(op);
   };
 
-  const handleImageMove = (image: Image, index: number, axis: 'x' | 'y', increment: number) => {
+  const handleImageMove = (index: number, axis: 'x' | 'y', increment: number) => {
     const prop = axis === 'x' ? 'left' : 'top';
     const path = ['images', index, prop];
     const op = { p: path, na: increment };
@@ -184,8 +147,8 @@ const SharedTable = ({ tableId }: Props) => {
                 surfaceWidth={surface.width}
                 surfaceHeight={surface.height}
                 onRemove={() => handleImageRemove(image, index)}
-                onMoveX={(image, increment) => handleImageMove(image, index, 'x', increment)}
-                onMoveY={(image, increment) => handleImageMove(image, index, 'y', increment)}
+                onMoveX={(increment) => handleImageMove(index, 'x', increment)}
+                onMoveY={(increment) => handleImageMove(index, 'y', increment)}
                 onMoveToTop={() => handleImageMoveToTop(image, index)}
                 onMoveToBottom={() => handleImageMoveToBottom(image, index)}
               />

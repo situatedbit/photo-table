@@ -10,6 +10,18 @@ export interface Image {
   zIndex: number;
 }
 
+function defaultImage(): Image {
+  return {
+    id: "",
+    left: 0,
+    pixelHeight: 0,
+    pixelWidth: 0,
+    top: 0,
+    url: "",
+    zIndex: 0,
+  };
+}
+
 export function plotImage(image: Image): Rectangle {
   const { left, pixelHeight, pixelWidth, top } = image;
 
@@ -27,30 +39,24 @@ export function centerImageOnPoint(image: Image, point: Point): Image {
   return { ...image, left, top };
 }
 
-export async function fetchImage(url: string): Promise<HTMLImageElement> {
+export async function fetchImage(url: string): Promise<Image> {
   const response = await fetch(url);
   const blob = await response.blob();
-  const image = new Image();
-  image.src = URL.createObjectURL(blob);
+  const imageEl = new Image();
+  imageEl.src = URL.createObjectURL(blob);
 
   return new Promise((resolve) => {
     const handleImageLoad = () => {
-      image.removeEventListener("load", handleImageLoad);
-      resolve(image);
+      imageEl.removeEventListener("load", handleImageLoad);
+
+      resolve({
+        ...defaultImage(),
+        url,
+        pixelHeight: imageEl.naturalHeight,
+        pixelWidth: imageEl.naturalWidth,
+      });
     };
 
-    image.addEventListener("load", handleImageLoad);
+    imageEl.addEventListener("load", handleImageLoad);
   });
-}
-
-export function imageFromElement(img: HTMLImageElement): Image {
-  return {
-    id: "",
-    left: 0,
-    pixelHeight: img.naturalHeight,
-    pixelWidth: img.naturalWidth,
-    top: 0,
-    url: img.src,
-    zIndex: 0,
-  };
 }

@@ -22,7 +22,6 @@ import {
   centerImageOnPoint,
   fetchImage,
   plotImage,
-  imageFromElement,
   Image,
 } from "@/models/image";
 import styles from "./SharedTable.module.css";
@@ -106,7 +105,7 @@ const SharedTable = ({ tableId }: Props) => {
   });
 
   const handleAddUrl = async (url: string) => {
-    const image = imageFromElement(await fetchImage(url));
+    const image = await fetchImage(url);
     const centeredImage = centerImageOnPoint(image, center(viewport));
 
     doc.submitOp(appendImageOp(table.images, centeredImage));

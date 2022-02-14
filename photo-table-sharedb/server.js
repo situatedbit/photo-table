@@ -1,13 +1,27 @@
+require('dotenv').config();
+
 var http = require('http');
 var express = require('express');
 var ShareDB = require('sharedb');
-var ShareDBMingo = require('sharedb-mingo-memory');
+var mongodb = require('sharedb-mongo');
 var WebSocket = require('ws');
 var WebSocketJSONStream = require('@teamwork/websocket-json-stream');
 var json0 = require('ot-json0');
 
 ShareDB.types.register(json0.type);
-var backend = new ShareDB({ db: new ShareDBMingo() });
+
+function connectionString(env) {
+  const user = env.MONGO_ROOT_USER;
+  const password = env.MONGO_ROOT_USER_PASSWORD;
+  const domain = env.MONGO_DOMAIN;
+  const port = env.MONGO_PORT;
+
+  return `mongodb://${user}:${password}@${domain}:${port}`;
+}
+
+var backend = new ShareDB({
+  db: mongodb(connectionString(process.env)),
+});
 
 startServer();
 

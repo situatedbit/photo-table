@@ -3,9 +3,12 @@ import type { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 
 // https://nextjs.org/docs/advanced-features/dynamic-import#with-no-ssr
-const SharedTable = dynamic(() => import("@/components/SharedTable"), {
-  ssr: false,
-});
+const DynamicLoadingSharedTable = dynamic(
+  () => import("@/components/DynamicLoadingSharedTable"),
+  {
+    ssr: false,
+  }
+);
 
 type Props = {
   id: string;
@@ -24,7 +27,7 @@ const TablePage = ({ id }: Props) => {
         <title>Table: {id}</title>
       </Head>
       <main>
-        <SharedTable tableId={id} />
+        <DynamicLoadingSharedTable tableId={id} />
       </main>
     </>
   );

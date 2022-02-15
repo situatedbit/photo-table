@@ -3,11 +3,12 @@ import ImageContainer from "./ImageContainer";
 import Toolbar from "./Toolbar";
 import Viewport from "./Viewport";
 import {
-  useSharedTable,
   appendImageOp,
   moveImageOp,
   removeImageOp,
   setImageZIndexOp,
+  Doc,
+  Table,
 } from "@/models/doc";
 import {
   center,
@@ -27,15 +28,15 @@ import {
 import styles from "./SharedTable.module.css";
 
 type Props = {
-  tableId: string;
+  doc: Doc<Table>;
+  table: Table;
 };
 
 const initialViewport = { x1: 0, y1: 0, x2: 0, y2: 0 };
 const origin = { x: 0, y: 0 };
 
-const SharedTable = ({ tableId }: Props) => {
+const SharedTable = ({ doc, table }: Props) => {
   const viewportDiv = useRef<HTMLDivElement>(null);
-  const [doc, table] = useSharedTable(tableId);
 
   // Viewport size will be based on DOM element size. Initialize it to a tiny
   // size, then wait for the Viewport component to synchronize the logical

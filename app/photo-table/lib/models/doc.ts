@@ -7,6 +7,8 @@ import {
 import { AddNumOp, ListDeleteOp, ListInsertOp } from "sharedb";
 import { Image } from "@/models/image";
 
+export type { Doc } from "@/models/client/sharedb";
+
 export interface Table {
   images: Image[];
 }
@@ -15,17 +17,26 @@ const emptyTable: Table = {
   images: [] as Image[],
 };
 
-export function useSharedTable(tableId: string): [Doc<Table>, Table] {
+interface SharedTableResult {
+  loading: boolean;
+  doc: Doc<Table>;
+  table: Table;
+}
+
+export function useSharedTable(tableId: string): SharedTableResult {
   const [table, setTable] = useState(emptyTable);
+  const [loading, setLoading] = useState(true);
   const doc = useMemo(() => getSharedDoc("tables", tableId), [tableId]);
 
   useEffect(() => {
     doc.subscribe((error: ShareDBError) => {
+      // TODO: respond to error
       if (error) return console.error(error);
     });
 
     const handleLoad = () => {
       setTable({ ...doc.data });
+      setLoading(false);
       // DEBUG
       console.log("loaded", { ...doc.data });
     };
@@ -45,7 +56,7 @@ export function useSharedTable(tableId: string): [Doc<Table>, Table] {
     };
   }, [tableId, doc]);
 
-  return [doc, table];
+  return { loading, doc, table };
 }
 
 export function appendImageOp(images: Image[], image: Image): ListInsertOp {

@@ -3,6 +3,7 @@ import { centerOnPoint, Point, Rectangle } from "./rectangle";
 export interface Image {
   id: string;
   left: number;
+  key: string;
   pixelHeight: number;
   pixelWidth: number;
   top: number;
@@ -13,6 +14,7 @@ export interface Image {
 function defaultImage(): Image {
   return {
     id: "",
+    key: "",
     left: 0,
     pixelHeight: 0,
     pixelWidth: 0,

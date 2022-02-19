@@ -22,7 +22,9 @@ export default function ImportFile({ onCancel, onSubmit }: Props) {
         type="file"
         accept="image/*"
         multiple={true}
-        onChange={({ target }) => setFiles(target.files ? [...target.files] : [])}
+        onChange={({ target }) =>
+          setFiles(target.files ? [...target.files] : [])
+        }
       />
       <input type="submit" value="Ok" />
       <input type="button" value="Cancel" onClick={onCancel} />

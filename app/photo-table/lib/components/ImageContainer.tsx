@@ -1,6 +1,7 @@
 /* eslint @next/next/no-img-element: 0 */
 import { useState, MouseEvent, FormEvent } from "react";
 import { Image } from "@/models/image";
+import { url as imageUrl } from "@/models/s3";
 import styles from "./ImageContainer.module.css";
 
 interface ImageContainerProps {
@@ -109,7 +110,7 @@ function ImageContainer({
           className={imgClassName}
           draggable="false"
           height={image.pixelHeight}
-          src={image.url}
+          src={imageUrl(image.key)}
           width={image.pixelWidth}
         />
         <form

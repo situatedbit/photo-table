@@ -4,7 +4,7 @@ describe("key", () => {
   const feb17 = 1645122362742; // => 2022-02-17
 
   test("formats date from time stamp", () => {
-    const result = key(['images'], feb17, 0, "file-name.jpg");
+    const result = key(["images"], feb17, 0, "file-name.jpg");
 
     expect(result.startsWith("images/2022-02-17-")).toBe(true);
   });

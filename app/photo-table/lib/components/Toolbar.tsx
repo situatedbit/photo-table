@@ -12,7 +12,13 @@ function Toolbar({ onAddUrl, onCenterOnOrigin, onImportFiles }: Props) {
   const [urlValue, setUrlValue] = useState("");
 
   const importFileButton = (
-    <button className="bg-slate-200 border-2 p-1" type="button" onClick={() => setIsImportFileVisible(true)}>Add Files</button>
+    <button
+      className="bg-slate-200 border-2 p-1"
+      type="button"
+      onClick={() => setIsImportFileVisible(true)}
+    >
+      Add Files
+    </button>
   );
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
@@ -25,7 +31,7 @@ function Toolbar({ onAddUrl, onCenterOnOrigin, onImportFiles }: Props) {
   const handleOnSubmitFiles = (files: File[]) => {
     onImportFiles(files);
     setIsImportFileVisible(false);
-  }
+  };
 
   return (
     <div className="bg-slate-50 border-b-2 p-2">

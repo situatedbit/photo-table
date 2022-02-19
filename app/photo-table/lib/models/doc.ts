@@ -59,8 +59,19 @@ export function useSharedTable(tableId: string): SharedTableResult {
   return { loading, doc, table };
 }
 
-export function appendImageOp(images: Image[], image: Image): ListInsertOp {
-  return { p: ["images", images.length], li: image };
+// imagesCount is number of images in list _before_ appending the new image
+export function appendImageOp(imagesCount: number, image: Image): ListInsertOp {
+  return { p: ["images", imagesCount], li: image };
+}
+
+// imagesCount is number of images in list _before_ appending the new images
+export function appendImagesOps(
+  imagesCount: number,
+  newImages: Image[]
+): ListInsertOp[] {
+  return newImages.map((image, index) =>
+    appendImageOp(imagesCount + index, image)
+  );
 }
 
 export function removeImageOp(image: Image, index: number): ListDeleteOp {

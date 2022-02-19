@@ -4,6 +4,7 @@ import Toolbar from "./Toolbar";
 import Viewport from "./Viewport";
 import {
   appendImageOp,
+  appendImagesOps,
   moveImageOp,
   removeImageOp,
   setImageZIndexOp,
@@ -25,6 +26,12 @@ import {
   plotImage,
   Image,
 } from "@/models/image";
+import {
+  key as imageKey,
+  url as imageUrl,
+  imageKeyRandomPrefix,
+  uploadFile,
+} from "@/models/s3";
 import styles from "./SharedTable.module.css";
 
 type Props = {
@@ -109,7 +116,35 @@ const SharedTable = ({ doc, table }: Props) => {
     const image = await fetchImage(url);
     const centeredImage = centerImageOnPoint(image, center(viewport));
 
-    doc.submitOp(appendImageOp(table.images, centeredImage));
+    doc.submitOp(appendImageOp(table.images.length, centeredImage));
+  };
+
+  const handleImportFiles = async (files: File[]) => {
+    try {
+      const uploadedImages: Image[] = [];
+
+      for (const file of files) {
+        const key = imageKey(
+          ["images"],
+          Date.now(),
+          imageKeyRandomPrefix(),
+          file.name
+        );
+
+        await uploadFile(key, file);
+
+        const image = {
+          ...(await fetchImage(imageUrl(key))),
+          key,
+        };
+
+        uploadedImages.push(centerImageOnPoint(image, center(viewport)));
+      }
+
+      doc.submitOp(appendImagesOps(table.images.length, uploadedImages));
+    } catch (error) {
+      console.log("unable to upload file", error);
+    }
   };
 
   const handleCenterOnOrigin = () => {
@@ -154,6 +189,7 @@ const SharedTable = ({ doc, table }: Props) => {
         <Toolbar
           onAddUrl={handleAddUrl}
           onCenterOnOrigin={handleCenterOnOrigin}
+          onImportFiles={handleImportFiles}
         />
       </div>
       <div className={styles.viewport} ref={viewportDiv}>
@@ -165,7 +201,7 @@ const SharedTable = ({ doc, table }: Props) => {
           {table.images.map((image, index) => {
             return (
               <ImageContainer
-                key={image.url + index}
+                key={image.key}
                 image={image}
                 surfaceWidth={surface.width}
                 surfaceHeight={surface.height}

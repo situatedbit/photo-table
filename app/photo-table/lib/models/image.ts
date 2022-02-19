@@ -7,7 +7,6 @@ export interface Image {
   pixelHeight: number;
   pixelWidth: number;
   top: number;
-  url: string;
   zIndex: number;
 }
 
@@ -19,7 +18,6 @@ function defaultImage(): Image {
     pixelHeight: 0,
     pixelWidth: 0,
     top: 0,
-    url: "",
     zIndex: 0,
   };
 }
@@ -53,7 +51,6 @@ export async function fetchImage(url: string): Promise<Image> {
 
       resolve({
         ...defaultImage(),
-        url,
         pixelHeight: imageEl.naturalHeight,
         pixelWidth: imageEl.naturalWidth,
       });

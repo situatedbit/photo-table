@@ -3,7 +3,6 @@ import ImageContainer from "./ImageContainer";
 import Toolbar from "./Toolbar";
 import Viewport from "./Viewport";
 import {
-  appendImageOp,
   appendImagesOps,
   moveImageOp,
   removeImageOp,
@@ -112,13 +111,6 @@ const SharedTable = ({ doc, table }: Props) => {
     return () => window.removeEventListener("resize", handleWindowResize);
   });
 
-  const handleAddUrl = async (url: string) => {
-    const image = await fetchImage(url);
-    const centeredImage = centerImageOnPoint(image, center(viewport));
-
-    doc.submitOp(appendImageOp(table.images.length, centeredImage));
-  };
-
   const handleImportFiles = async (files: File[]) => {
     try {
       const uploadedImages: Image[] = [];
@@ -187,7 +179,6 @@ const SharedTable = ({ doc, table }: Props) => {
     <div className={styles["table-wrapper"]}>
       <div className={styles.bar}>
         <Toolbar
-          onAddUrl={handleAddUrl}
           onCenterOnOrigin={handleCenterOnOrigin}
           onImportFiles={handleImportFiles}
         />

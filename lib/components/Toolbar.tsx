@@ -13,10 +13,7 @@ function Toolbar({ onCenterOnOrigin, onImportFiles }: Props) {
   return (
     <div className="bg-slate-50 border-b-2 p-2">
       <form className="flex gap-2">
-        <label
-          className="bg-slate-200 border-2 p-1"
-          htmlFor="c-toolbar-file"
-        >
+        <label className="bg-slate-200 border-2 p-1" htmlFor="c-toolbar-file">
           🠅 Add Images
         </label>
         <input

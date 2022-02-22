@@ -3,8 +3,11 @@
   "private": true,
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' next dev",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
     "build": "next build",
     "start": "next start",
+    "start:sharedb": "node server-sharedb/server.js",
     "test": "jest --watch",
     "lint": "prettier --check . && next lint",
     "prettier": "prettier --write ."
@@ -13,11 +16,16 @@
     "@aws-sdk/client-cognito-identity": "^3.51.0",
     "@aws-sdk/client-s3": "^3.51.0",
     "@aws-sdk/credential-provider-cognito-identity": "^3.51.0",
+    "@teamwork/websocket-json-stream": "^2.0.0",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.2",
     "next": "12.0.7",
+    "ot-json0": "^1.1.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "reconnecting-websocket": "^4.4.0",
     "sharedb": "^2.2.1",
+    "sharedb-mongo": "^1.0.0-beta.21",
     "ws": "^8.4.0"
   },
   "devDependencies": {
